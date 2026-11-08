@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trainingswoche</title>
+<meta name="theme-color" content="#edf0f3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e151b" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Training">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; }
+[hidden] { display: none !important; }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: Kopf mit Titel, Inhalt des gewählten Reiters, feste Reiterleiste unten. Farben und Schrift hier, alles andere in css/app.css */
+:root {
+  --bg: #edf0f3;
+  --surface: #ffffff;
+  --ink: #121c26;
+  --muted: #5b6b7a;
+  --line: #d5dce3;
+  --track: #dde3e9;
+  --accent: #0b63c9;
+  --accent-ink: #ffffff;
+  --good: #1e8e5a;
+  --good-ink: #ffffff;
+  --over: #a85d00;
+  --danger: #b3261e;
+  --danger-ink: #ffffff;
+  --accent-soft: color-mix(in srgb, var(--accent) 14%, var(--surface));
+  --over-soft: color-mix(in srgb, var(--over) 16%, var(--surface));
+  --font-display: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e151b; --surface: #16202a; --ink: #e8eef3; --muted: #93a3b3; --line: #26333f; --track: #243240;
+    --accent: #4da3ff; --accent-ink: #06121f; --good: #43c28a; --good-ink: #06121f; --over: #f0b429; --danger: #ff8a80; --danger-ink: #3a0b08;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e151b; --surface: #16202a; --ink: #e8eef3; --muted: #93a3b3; --line: #26333f; --track: #243240;
+  --accent: #4da3ff; --accent-ink: #06121f; --good: #43c28a; --good-ink: #06121f; --over: #f0b429; --danger: #ff8a80; --danger-ink: #3a0b08;
+  color-scheme: dark;
+}
+/* Schwarz: echtes Schwarz als Grund, Karten nur minimal abgesetzt. Steht nach den Dunkel-Blöcken, damit es sie überschreibt. */
+:root[data-theme="black"] {
+  --bg: #000000; --surface: #0a0a0a; --ink: #f2f2f2; --muted: #8c959e; --line: #1d1d1d; --track: #1a1a1a;
+  --accent: #4da3ff; --accent-ink: #06121f; --good: #43c28a; --good-ink: #06121f; --over: #f0b429; --danger: #ff8a80; --danger-ink: #3a0b08;
+  color-scheme: dark;
+}
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.45;
+  padding-block: 20px calc(96px + env(safe-area-inset-bottom, 0px));
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+</style>
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+
+<div class="app">
+  <header class="top">
+    <div>
+      <p class="eyebrow" id="eyebrow"></p>
+      <h1 id="title"></h1>
+    </div>
+    <span class="status" id="status" aria-live="polite"></span>
+  </header>
+  <main id="view"></main>
+</div>
+<nav class="tabs" aria-label="Hauptnavigation">
+  <div class="tabs-in" id="tabs"></div>
+</nav>
+
+<!-- Kern zuerst, danach ein Modul pro Reiter. Ein neuer Reiter ist eine neue Datei und eine neue Zeile hier. -->
+<script src="js/core.js"></script>
+<script src="js/changelog.js"></script>
+<script src="js/diag.js"></script>
+<script src="js/calc.js"></script>
+<script src="js/store.js"></script>
+<script src="js/reports.js"></script>
+<script src="js/files.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/persona.js"></script>
+<script src="js/weight.js"></script>
+<script src="js/weightremind.js"></script>
+<script src="js/health.js"></script>
+<script src="js/backup.js"></script>
+<script src="js/reminder.js"></script>
+<script src="js/shift.js"></script>
+<script src="js/timer.js"></script>
+<script src="js/stats.js"></script>
+<script src="js/fold.js"></script>
+<script src="js/dialog.js"></script>
+<script src="js/keyboard.js"></script>
+<script src="js/compare.js"></script>
+<script src="js/records.js"></script>
+<script src="js/badges.js"></script>
+<script src="js/reorder.js"></script>
+<script src="js/daydrag.js"></script>
+<script src="js/views/plan.js"></script>
+<script src="js/views/uebungen.js"></script>
+<script src="js/views/berichte.js"></script>
+<script src="js/views/einstellungen.js"></script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("./sw.js").catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
