@@ -233,6 +233,8 @@ button.day { background: transparent; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .exlist.sorting .exitem:not(.lifted), .trash, .ex-chev svg { transition: none; } }
 .line { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .line .lab { color: var(--muted); font-size: 14px; }
+.line[hidden] { display: none; }
+.kc-basis { margin-top: 2px; }
 
 /* Berichte */
 .rep-holder { display: grid; gap: 14px; min-width: 0; }
@@ -365,6 +367,9 @@ textarea.in { width: 100%; resize: vertical; font: 13px/1.4 ui-monospace, Menlo,
 
 /* Überschriften tragen die Akzentfarbe */
 h1, .card h2 { color: color-mix(in srgb, var(--accent) 82%, var(--ink)); }
+/* Aufklapper: Überschrift in Textfarbe (weiß im dunklen, schwarz im hellen Design), nur geöffnet in Akzentfarbe */
+.fold > summary h2 { color: var(--ink); }
+.fold[open] > summary h2 { color: color-mix(in srgb, var(--accent) 82%, var(--ink)); }
 
 /* Vergleich im Reiter Berichte */
 .pick { display: flex; flex-wrap: wrap; gap: 6px; max-height: 148px; overflow-y: auto; padding: 2px; }
@@ -450,7 +455,7 @@ button.day { position: relative; user-select: none; -webkit-user-select: none; -
 /* Gesundheitswerte */
 .hv-two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .hv-two .rec { padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; }
-.hv-two .rec-big { font-size: 22px; }
+.hv-two .rec-big { font-size: 22px; overflow-wrap: anywhere; }
 @media (max-width: 360px) { .hv-two { grid-template-columns: 1fr; } }
 .exitem .kc-u { color: var(--muted); font-size: 14px; }
 .exitem input[id^="ex-kcal-"] { width: 108px; }
@@ -490,6 +495,47 @@ html.kb-open #view { padding-bottom: 60vh; }
 .goal-pin { position: absolute; top: 50%; width: 20px; height: 20px; margin: -10px 0 0 -10px; border-radius: 50%; border: 3px solid var(--surface); box-shadow: 0 0 0 1px var(--line); }
 .goal-ends { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--muted); }
 .wl-target { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 3; }
+
+/* Trainingskalender */
+.cal-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.cal-title { margin: 0; font-weight: 600; text-transform: capitalize; }
+.cal-nav { min-width: 44px; padding: 6px 12px; font-size: 20px; line-height: 1; }
+.cal-nav:disabled { opacity: .35; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.cal-wd { text-align: center; font-size: 12px; font-weight: 600; color: var(--muted); padding-bottom: 2px; }
+.cal-c { display: grid; align-content: center; justify-items: center; min-height: 46px; border-radius: 10px; border: 2px solid transparent; box-sizing: border-box; font-size: 14px; min-width: 0; }
+.cal-c b { font-weight: 600; line-height: 1.1; }
+.cal-c small { font-size: 10px; line-height: 1.1; min-height: 11px; color: var(--muted); }
+.cal-c.blank { border: 0; }
+.cal-c.ok { background: color-mix(in srgb, var(--good) 32%, var(--surface)); border-color: var(--good); }
+.cal-c.ok small { color: var(--ink); font-weight: 700; }
+.cal-c.part { background: var(--accent-soft); border-color: var(--accent); }
+.cal-c.miss { border: 2px dashed var(--muted); }
+.cal-c.rest { background: color-mix(in srgb, var(--muted) 12%, transparent); color: var(--muted); }
+.cal-c.future, .cal-c.none { color: var(--muted); opacity: .55; }
+.cal-c.today { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--ink); }
+.cal-k { width: 14px; height: 14px; border-radius: 4px; box-sizing: border-box; }
+.legend i.cal-k.ok { background: color-mix(in srgb, var(--good) 32%, var(--surface)); border: 2px solid var(--good); }
+.legend i.cal-k.part { background: var(--accent-soft); border: 2px solid var(--accent); }
+.legend i.cal-k.miss { background: transparent; border: 2px dashed var(--muted); }
+.legend i.cal-k.rest { background: color-mix(in srgb, var(--muted) 12%, transparent); border: 0; }
+.cal-c { font: inherit; color: var(--ink); background: none; cursor: pointer; padding: 0; }
+.cal-c.blank { cursor: default; }
+.cal-c.pause { border: 2px dotted var(--accent); }
+.cal-c.pause small { color: var(--accent); font-weight: 600; }
+.cal-c.sel { outline: 2px solid var(--ink); outline-offset: 2px; }
+.cal-c.rest, .cal-c.future, .cal-c.none { color: var(--muted); }
+.legend i.cal-k.pause { background: transparent; border: 2px dotted var(--accent); }
+.cal-sel { display: grid; gap: 8px; justify-items: start; }
+.cal-sel p { margin: 0; }
+.cal-sel-t { font-weight: 600; }
+.pausebox { display: grid; gap: 6px; justify-items: start; margin-top: 10px; }
+.pausebox .hint { margin: 0; }
+.arc-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.arc-list li { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; justify-content: space-between; }
+.arc-n { display: grid; min-width: 0; flex: 1 1 140px; }
+.ex-arcline { flex-wrap: wrap; gap: 8px; align-items: center; }
+.ex-arcline .hint { margin: 0; flex: 1 1 140px; }
 
 </style>
 </head>
@@ -635,9 +681,35 @@ html.kb-open #view { padding-bottom: 60vh; }
 (function () {
   "use strict";
 
-  App.version = "1.21.0";
+  App.version = "1.27.0";
 
   App.changelog = [
+    { v: "1.27.0", date: "2026-11-11", items: [
+      "Neu: Pausentage. Im Trainingsplan gibt es „Pause nötig“, im Trainingskalender tippst du einen Tag an und markierst ihn als Pause (auch für geplanten Urlaub). Ein Pausentag zählt nicht als ausgelassen und hat keine Ziele. Eine Woche, in der alle Trainingstage pausiert sind, unterbricht die Serie nicht. Berichte vergangener Wochen ändern sich nicht.",
+      "Neu: Übungen archivieren. In der aufgeklappten Übung gibt es „Archivieren“. Die Übung verschwindet aus dem Plan, behält aber Ziel, Einheit, kcal und MET-Wert und lässt sich im Archiv mit einem Tipp zurückholen. Berichte und Rekorde bleiben wie sie sind."
+    ] },
+    { v: "1.26.0", date: "2026-11-10", items: [
+      "Neu: Trainingskalender in Berichte. Eine Monatsansicht, in der jeder Tag nach Erfüllung gefärbt ist (alles geschafft, teilweise, ausgelassen, Ruhetag). Mit den Pfeilen blätterst du durch die Monate."
+    ] },
+    { v: "1.25.0", date: "2026-11-10", items: [
+      "Neu: Oben im Reiter Berichte steht „Auf einen Blick“ mit Wochenziel, Serie, Kalorien und Gewicht, ohne dass du etwas aufklappen musst.",
+      "Neu: Auf dem Handy öffnet „Backup speichern“ auch im Browser das Teilen-Menü (Google Drive, Dateien, E-Mail). In den Einstellungen steht dazu ein Hinweis.",
+      "Neu in der installierten App: Gibt es eine neue Version, erscheint ein Hinweis mit „Neu laden“. Das Schließen und Wiederöffnen entfällt."
+    ] },
+    { v: "1.24.1", date: "2026-11-10", items: [
+      "Geändert: Die Überschriften der aufklappbaren Blöcke in Berichte und Einstellungen sind jetzt weiß (dunkles und schwarzes Design) oder schwarz (helles Design). Nur der geöffnete Block zeigt seine Überschrift in der Akzentfarbe."
+    ] },
+    { v: "1.24.0", date: "2026-11-10", items: [
+      "Neu: Unter den kcal einer Übung gibt es jetzt eine Berechnungsgrundlage mit MET-Wert (und bei Wiederholungen den Sekunden je Wiederholung). Der Verbrauch wird daraus automatisch berechnet: MET × Gewicht × Dauer. Ändert sich dein Gewicht, ändert sich der Wert von selbst. Leere Felder nutzen die Vorgaben der App, ein eigener kcal-Wert hat weiter Vorrang.",
+      "Die Berichte und die Datensicherung merken sich den MET-Wert der Übung."
+    ] },
+    { v: "1.23.0", date: "2026-11-10", items: [
+      "Neu: Der Übungs-Timer startet mit 2 Sekunden Vorbereitung. Die Anzeige beginnt bei −00:02, damit du in Position gehen kannst. Erst ab 00:00 zählt die Zeit für Ziel und Eintrag; ein kurzer Ton zeigt den Beginn an."
+    ] },
+    { v: "1.22.0", date: "2026-11-10", items: [
+      "Geändert: Im Reiter Berichte sind jetzt alle Blöcke aufklappbar und anfangs zu: Verlauf, Serie und Bestwerte, die Wochen- oder Monatsberichte, Gesundheitswerte, Rekorde, Abzeichen und Datensicherung. So muss man nicht mehr weit scrollen, um zu den unteren Punkten zu kommen.",
+      "Im Vergleich sind „Gesamtleistung“ und „Je Übung“ aufklappbar, die Gesamtleistung ist anfangs offen. Die App merkt sich bis zum Neuladen, was du geöffnet hast."
+    ] },
     { v: "1.21.0", date: "2026-11-08", items: [
       "Neu: Zielgewicht. Unter Einstellungen > Persönliche Angaben gibt es das Feld „Zielgewicht“ direkt über dem Kästchen für die Sonntags-Erinnerung. Der Hinweistext darunter entfällt.",
       "Im Reiter Berichte zeigen die Gesundheitswerte beim Gewicht jetzt „Abstand zum Zielgewicht“: wie viele Kilo noch fehlen und einen Farbverlauf vom Start (rot) über Orange, Gelb und Hellgrün bis zum Ziel (dunkelgrün). Wer das Ziel erreicht oder übertrifft, steht am dunkelgrünen Ende. Der Start ist dein erster Eintrag im Gewichtsverlauf, das Ziel gilt auch beim Zunehmen.",
@@ -880,9 +952,13 @@ html.kb-open #view { padding-bottom: 60vh; }
 
   function dayItems(st, i) {
     if (!st.days[i]) return null;
+    if (st.pauses && st.pauses.indexOf(ymd(addDays(parseYmd(st.weekStart), i))) >= 0) return null;
     return st.exercises.map(function (e) {
       var row = [e.name, e.unit, e.target, doneOf(st, i, e.id)];
-      if (e.kcal) row.push(e.kcal);
+      if (e.kcal || e.met || e.sec) {
+        row.push(e.kcal || 0);
+        if (e.met || e.sec) row.push(e.met || 0, e.sec || 0);
+      }
       return row;
     });
   }
@@ -966,6 +1042,8 @@ html.kb-open #view { padding-bottom: 60vh; }
         { id: "situps", name: "Sit-Ups", target: 30, unit: "Wdh." },
         { id: "plank", name: "Plank", target: 60, unit: "Sek." }
       ],
+      archive: [],
+      pauses: [],
       days: DEFAULT_DAYS.slice(),
       shift: null,
       done: {},
@@ -977,12 +1055,10 @@ html.kb-open #view { padding-bottom: 60vh; }
     };
   }
 
-  /* Baut immer eine frische, veränderbare Kopie. Daten aus dem Konto sind schreibgeschützt. */
-  function clean(raw) {
-    if (!raw || typeof raw !== "object" || !Array.isArray(raw.exercises)) return null;
-    var seen = {};
+  /* Übungen bereinigen. seen sammelt die vergebenen IDs, damit keine doppelt vorkommt (auch nicht zwischen Plan und Archiv). */
+  function cleanExercises(arr, seen) {
     var ex = [];
-    raw.exercises.forEach(function (e) {
+    (Array.isArray(arr) ? arr : []).forEach(function (e) {
       if (!e || typeof e !== "object") return;
       var id = typeof e.id === "string" && /^[A-Za-z0-9_-]{1,24}$/.test(e.id) && !seen[e.id] ? e.id : uid();
       seen[id] = 1;
@@ -994,8 +1070,20 @@ html.kb-open #view { padding-bottom: 60vh; }
       };
       var kc = cleanKcal(e.kcal);
       if (kc) item.kcal = kc;
+      var mt = cleanMet(e.met), sc = cleanSec(e.sec);
+      if (mt) item.met = mt;
+      if (sc) item.sec = sc;
       ex.push(item);
     });
+    return ex;
+  }
+
+  /* Baut immer eine frische, veränderbare Kopie. Daten aus dem Konto sind schreibgeschützt. */
+  function clean(raw) {
+    if (!raw || typeof raw !== "object" || !Array.isArray(raw.exercises)) return null;
+    var seen = {};
+    var ex = cleanExercises(raw.exercises, seen);
+    var arc = cleanExercises(raw.archive, seen).slice(0, 50);
     var done = {};
     if (raw.done && typeof raw.done === "object") {
       for (var i = 0; i < 7; i++) {
@@ -1013,6 +1101,8 @@ html.kb-open #view { padding-bottom: 60vh; }
       v: 1,
       weekStart: typeof raw.weekStart === "string" && ISO.test(raw.weekStart) ? raw.weekStart : mondayStr(),
       exercises: ex,
+      archive: arc,
+      pauses: cleanPauses(raw.pauses),
       days: Array.isArray(raw.days) && raw.days.length === 7 ? raw.days.map(Boolean) : DEFAULT_DAYS.slice(),
       shift: null,
       done: done,
@@ -1026,12 +1116,31 @@ html.kb-open #view { padding-bottom: 60vh; }
     return out;
   }
 
+  /* Eigener MET-Wert (0,5 bis 30) und eigene Sekunden je Wiederholung (0,5 bis 120), je zwei Nachkommastellen, sonst null (= Tabelle) */
+  function cleanMet(x) {
+    var n = typeof x === "number" ? x : NaN;
+    if (!isFinite(n) || n < 0.5 || n > 30) return null;
+    return Math.round(n * 100) / 100;
+  }
+  function cleanSec(x) {
+    var n = typeof x === "number" ? x : NaN;
+    if (!isFinite(n) || n < 0.5 || n > 120) return null;
+    return Math.round(n * 100) / 100;
+  }
+
   /* Eigener Kalorienverbrauch je Einheit (je Wiederholung, Sekunde oder Minute): größer 0 bis 1000, drei Nachkommastellen, sonst null (= automatisch) */
   function cleanKcal(x) {
     var n = typeof x === "number" ? x : NaN;
     if (!isFinite(n) || n <= 0 || n > 1000) return null;
     n = Math.round(n * 1000) / 1000;
     return n > 0 ? n : null;
+  }
+
+  /* Pausentage: Daten (JJJJ-MM-TT), an denen nicht trainiert wird (Krankheit, Urlaub). Sie zählen nicht als ausgelassen. Höchstens 800, aufsteigend. */
+  function cleanPauses(arr) {
+    var map = {};
+    (Array.isArray(arr) ? arr : []).forEach(function (d) { if (typeof d === "string" && ISO.test(d)) map[d] = 1; });
+    return Object.keys(map).sort().slice(-800);
   }
 
   /* Gewichtsverlauf: [{ d: JJJJ-MM-TT, kg: 20 bis 300, eine Nachkommastelle }], aufsteigend, ein Eintrag je Tag, höchstens 3000 */
@@ -1124,7 +1233,9 @@ html.kb-open #view { padding-bottom: 60vh; }
             Math.min(99999, Math.max(1, Math.floor(num(it[2], 1)))),
             Math.min(99999, Math.max(0, Math.floor(num(it[3], 0))))
           ];
-          if (own) row.push(own);
+          var mt = cleanMet(it[5]), sc = cleanSec(it[6]);
+          if (own || mt || sc) row.push(own || 0);
+          if (mt || sc) row.push(mt || 0, sc || 0);
           items.push(row);
         });
         d.push(items);
@@ -1280,6 +1391,9 @@ html.kb-open #view { padding-bottom: 60vh; }
     cleanProfile: cleanProfile,
     cleanBody: cleanBody,
     cleanKcal: cleanKcal,
+    cleanPauses: cleanPauses,
+    cleanMet: cleanMet,
+    cleanSec: cleanSec,
     cleanWeights: cleanWeights,
     NICK_MAX: NICK_MAX,
     NOTE_MAX: NOTE_MAX,
@@ -1396,7 +1510,7 @@ html.kb-open #view { padding-bottom: 60vh; }
       r.d.forEach(function (items, i) {
         if (!items) return;
         items.forEach(function (it, k) {
-          var kcal = App.health.kcalItem(it[0], it[1], it[3], kg, it[4]);
+          var kcal = App.health.kcalItem(it[0], it[1], it[3], kg, it[4], it[5], it[6]);
           rows.push([r.w, C.isoWeek(mon), C.ymd(C.addDays(mon, i)), App.DAYS[i].n, it[0], it[1], it[2], it[3], Math.round(it[3] / it[2] * 100), kcal > 0 ? Math.round(kcal) : "", k === 0 && r.n && r.n[i] ? r.n[i] : ""]);
         });
       });
@@ -1431,6 +1545,65 @@ html.kb-open #view { padding-bottom: 60vh; }
 
 </script>
 <script>
+/* Pausentage: einzelne Tage, an denen nicht trainiert wird (Krankheit, Urlaub). Ein Pausentag zählt nicht als ausgelassen,
+   hat keine Ziele und unterbricht keine Serie. Eine ganze Woche, in der alle Trainingstage pausiert sind, wird bei Serien übersprungen.
+   Gespeichert als Liste von Daten (JJJJ-MM-TT) im Stand: state.pauses. */
+(function () {
+  "use strict";
+  var S = App.store, C = App.calc;
+
+  function is(date) { return S.state().pauses.indexOf(date) >= 0; }
+
+  /* Datum des Wochentags i (0 = Montag) in der laufenden Woche */
+  function dateOfDay(i) { return C.ymd(C.addDays(C.parseYmd(S.state().weekStart), i)); }
+
+  /* Ob an diesem Tag schon etwas eingetragen ist: dann lässt er sich nicht pausieren */
+  function hasProgress(date) {
+    var st = S.state(), i = Math.round((C.parseYmd(date) - C.parseYmd(st.weekStart)) / 86400000);
+    if (i >= 0 && i <= 6) {
+      return st.exercises.some(function (e) { return C.doneOf(st, i, e.id) > 0; });
+    }
+    /* frühere Wochen: aus dem Bericht */
+    var mon = C.ymd(C.addDays(C.parseYmd(date), -((C.parseYmd(date).getDay() + 6) % 7)));
+    var r = st.reports.filter(function (x) { return x.w === mon; })[0];
+    var j = Math.round((C.parseYmd(date) - C.parseYmd(mon)) / 86400000);
+    return !!(r && r.d[j] && r.d[j].some(function (it) { return it[3] > 0; }));
+  }
+
+  /* Gibt true zurück, wenn sich der Zustand geändert hat */
+  function set(date, on) {
+    var st = S.state(), i = st.pauses.indexOf(date);
+    if (on) {
+      if (i >= 0 || hasProgress(date)) return false;
+      st.pauses.push(date);
+      st.pauses.sort();
+      if (st.pauses.length > 800) st.pauses = st.pauses.slice(-800);
+    } else {
+      if (i < 0) return false;
+      st.pauses.splice(i, 1);
+    }
+    S.touch();
+    return true;
+  }
+
+  /* Montag w einer Woche ohne Bericht, in der alle Trainingstage des jetzigen Plans pausiert sind */
+  function skipped(w) {
+    var st = S.state();
+    if (!st.pauses.length || st.reports.some(function (r) { return r.w === w; }) || w === st.weekStart) return false;
+    var mon = C.parseYmd(w), any = false;
+    for (var i = 0; i < 7; i++) {
+      if (!st.days[i]) continue;
+      any = true;
+      if (st.pauses.indexOf(C.ymd(C.addDays(mon, i))) < 0) return false;
+    }
+    return any;
+  }
+
+  App.pause = { is: is, set: set, dateOfDay: dateOfDay, hasProgress: hasProgress, skipped: skipped };
+})();
+
+</script>
+<script>
 /* Dateien: Speichern, Kopieren und Lesen. Im Artifact über die Fähigkeit "downloads", in der installierten Web-App
    über das Teilen-Menü, sonst als normaler Download. Wird von Berichten und später von den Einstellungen genutzt. */
 (function () {
@@ -1440,6 +1613,11 @@ html.kb-open #view { padding-bottom: 60vh; }
   function standalone() {
     try { return (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true; }
     catch (e) { return false; }
+  }
+
+  /* Handy oder Tablet (Touch als Hauptgerät): dort ist das Teilen-Menü der bequemste Weg zu Drive, E-Mail oder Dateien */
+  function mobile() {
+    try { return !!(window.matchMedia && matchMedia("(pointer: coarse)").matches); } catch (e) { return false; }
   }
 
   function viaBrowser(name, text, mime) {
@@ -1457,7 +1635,7 @@ html.kb-open #view { padding-bottom: 60vh; }
       } catch (e) { return "error"; }
     }
     try {
-      if (standalone() && navigator.canShare && window.File) {
+      if ((standalone() || mobile()) && navigator.canShare && window.File) {
         var f = new File([text], name, { type: mime });
         if (navigator.canShare({ files: [f] })) {
           return navigator.share({ files: [f] }).then(function () { return "ok"; }, function (e) {
@@ -1560,7 +1738,7 @@ html.kb-open #view { padding-bottom: 60vh; }
     return { node: node, say: say };
   }
 
-  App.files = { save: save, copy: copy, read: read, importBox: importBox };
+  App.files = { canShareFiles: function () { try { return !IN_VIEWER && (standalone() || mobile()) && !!navigator.canShare && !!window.File && navigator.canShare({ files: [new File(["x"], "x.json", { type: "application/json" })] }); } catch (e) { return false; } }, save: save, copy: copy, read: read, importBox: importBox };
 })();
 
 </script>
@@ -1872,35 +2050,48 @@ html.kb-open #view { padding-bottom: 60vh; }
   function secondsOf(unit, v) { return unit === "Min." ? v * 60 : v; }
 
   /* Geschätzte kcal für einen Posten: name, Einheit, Menge, Gewicht in kg */
-  function kcalItem(name, unit, v, kg, own) {
-    if (!(v > 0)) return 0;
-    if (own > 0) return own * v;
-    if (!(kg > 0)) return 0;
-    var n = String(name).toLowerCase(), met, sec;
+  /* Vorgabe aus der Tabelle: { met, sec } (sec = Sekunden je Wiederholung, nur bei Wdh.) */
+  function defaults(name, unit) {
+    var n = String(name).toLowerCase();
     if (unit === "Wdh.") {
       var m = REPS_DEFAULT;
       for (var i = 0; i < REPS.length; i++) if (REPS[i][0].test(n)) { m = [REPS[i][1], REPS[i][2]]; break; }
-      met = m[0];
-      sec = v * m[1];
-    } else {
-      met = TIMED_DEFAULT;
-      for (var j = 0; j < TIMED.length; j++) if (TIMED[j][0].test(n)) { met = TIMED[j][1]; break; }
-      sec = secondsOf(unit, v);
+      return { met: m[0], sec: m[1] };
     }
+    var met = TIMED_DEFAULT;
+    for (var j = 0; j < TIMED.length; j++) if (TIMED[j][0].test(n)) { met = TIMED[j][1]; break; }
+    return { met: met, sec: null };
+  }
+
+  /* Geschätzte kcal für einen Posten: name, Einheit, Menge, Gewicht in kg.
+     own = eigener kcal-Wert je Einheit (hat Vorrang), cmet / csec = eigener MET-Wert / eigene Sekunden je Wiederholung (sonst Tabelle) */
+  function kcalItem(name, unit, v, kg, own, cmet, csec) {
+    if (!(v > 0)) return 0;
+    if (own > 0) return own * v;
+    if (!(kg > 0)) return 0;
+    var d = defaults(name, unit);
+    var met = cmet > 0 ? cmet : d.met;
+    var sec = unit === "Wdh." ? v * (csec > 0 ? csec : d.sec) : secondsOf(unit, v);
     return met * kg * sec / 3600;
+  }
+
+  /* Gewicht für Berechnungen heute: letzter Eintrag im Gewichtsverlauf, sonst die persönliche Angabe */
+  function currentKg() {
+    var l = App.weight && App.weight.at ? App.weight.at(C.ymd(new Date())) : null;
+    return l !== null && l !== undefined ? l : App.persona.get().weight;
   }
 
   /* Ein Tag ist null (Ruhetag) oder eine Liste [Name, Einheit, Ziel, Erreicht] */
   function kcalDay(items, kg) {
     if (!items) return 0;
-    return items.reduce(function (s, it) { return s + kcalItem(it[0], it[1], it[3], kg, it[4]); }, 0);
+    return items.reduce(function (s, it) { return s + kcalItem(it[0], it[1], it[3], kg, it[4], it[5], it[6]); }, 0);
   }
   function kcalDays(days, kg) {
     return days.reduce(function (s, items) { return s + kcalDay(items, kg); }, 0);
   }
 
   /* Automatischer Wert je Einheit (eine Wiederholung, eine Sekunde oder eine Minute), nur mit Gewicht */
-  function autoPer(name, unit, kg) { return kcalItem(name, unit, 1, kg); }
+  function autoPer(name, unit, kg, cmet, csec) { return kcalItem(name, unit, 1, kg, 0, cmet, csec); }
 
   function bmi(cm, kg) {
     if (!(cm > 0) || !(kg > 0)) return null;
@@ -2116,7 +2307,7 @@ html.kb-open #view { padding-bottom: 60vh; }
     return App.fold("ges", "Gesundheitswerte", "rep-health", kids);
   }
 
-  App.health = { kcalItem: kcalItem, kcalDay: kcalDay, kcalDays: kcalDays, autoPer: autoPer, goalState: goalState, colorAt: colorAt, bmi: bmi, bmiCat: bmiCat, basis: basis, fmt1: fmt1, fmtKcal: fmtKcal, card: card };
+  App.health = { defaults: defaults, currentKg: currentKg, kcalItem: kcalItem, kcalDay: kcalDay, kcalDays: kcalDays, autoPer: autoPer, goalState: goalState, colorAt: colorAt, bmi: bmi, bmiCat: bmiCat, basis: basis, fmt1: fmt1, fmtKcal: fmtKcal, card: card };
 })();
 
 </script>
@@ -2379,19 +2570,25 @@ html.kb-open #view { padding-bottom: 60vh; }
 <script>
 /* Timer für Übungen mit Zeiteinheit (Sek. oder Min.), zum Beispiel Plank.
    Es läuft immer nur ein Timer. Er zählt nach der Uhrzeit und bleibt deshalb auch bei gesperrtem Bildschirm genau.
+   Vor der eigentlichen Zeit läuft eine Vorbereitung von 2 Sekunden: die Anzeige startet bei −00:02, damit man nach dem Drücken
+   in Position gehen kann. Erst ab 00:00 zählt die Zeit für Ziel und Eintrag.
    Die Zeit wird erst bei „Eintragen“ zum Wert der Übung addiert. Der Timer-Zustand liegt im Speicher und überlebt
    Reiterwechsel, aber kein Neuladen der Seite. Die Anzeige im Trainingsplan steht in views/plan.js. */
 (function () {
   "use strict";
   var el = App.el;
 
-  var t = null;     /* { day, id, name, unit, target, acc, since, fired, done } */
+  var t = null;     /* { day, id, name, unit, target, acc, since, fired, go, done } */
   var ui = null;    /* Elemente des gerade sichtbaren Timers */
   var iv = null, lock = null, audio = null, onChange = null;
 
   function supports(unit) { return unit === "Sek." || unit === "Min."; }
   function per(unit) { return unit === "Min." ? 60 : 1; }
-  function elapsedMs() { return t ? t.acc + (t.since ? Date.now() - t.since : 0) : 0; }
+  var LEAD_MS = 2000;  /* Vorbereitung vor dem Start der Zeit */
+  function rawMs() { return t ? t.acc + (t.since ? Date.now() - t.since : 0) : 0; }
+  /* Die Zeit der Übung ohne Vorbereitung */
+  function elapsedMs() { return Math.max(0, rawMs() - LEAD_MS); }
+  function leadLeft() { return t ? Math.max(0, Math.ceil((LEAD_MS - rawMs()) / 1000)) : 0; }
   function active() { return !!t && (!!t.since || t.acc > 0); }
   function pad(n) { return String(n).padStart(2, "0"); }
   function fmt(sec) { sec = Math.max(0, Math.floor(sec)); return pad(Math.floor(sec / 60)) + ":" + pad(sec % 60); }
@@ -2421,6 +2618,22 @@ html.kb-open #view { padding-bottom: 60vh; }
     } catch (e) { /* Ton ist nur eine Zugabe */ }
   }
 
+  /* Kurzer Ton, wenn die Vorbereitung vorbei ist und die Zeit beginnt */
+  function beepGo() {
+    try {
+      if (navigator.vibrate) navigator.vibrate(80);
+      if (!audio) return;
+      if (audio.state === "suspended") audio.resume();
+      var o = audio.createOscillator(), g = audio.createGain(), at = audio.currentTime;
+      o.frequency.value = 660;
+      g.gain.setValueAtTime(0.0001, at);
+      g.gain.exponentialRampToValueAtTime(0.2, at + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, at + 0.18);
+      o.connect(g); g.connect(audio.destination);
+      o.start(at); o.stop(at + 0.2);
+    } catch (e) { /* Ton ist nur eine Zugabe */ }
+  }
+
   function alertGoal() {
     t.fired = true;
     try { if (navigator.vibrate) navigator.vibrate([250, 120, 250]); } catch (e) { /* egal */ }
@@ -2446,9 +2659,12 @@ html.kb-open #view { padding-bottom: 60vh; }
     if (!ui || !t) return;
     /* Alles in ganzen Sekunden, damit Zeit und Rest zusammenpassen */
     var sec = Math.floor(elapsedMs() / 1000), total = baseSec() + sec, goal = goalSec(), n = amount();
-    ui.time.textContent = fmt(sec);
+    var lead = leadLeft();
+    ui.time.textContent = lead > 0 ? "−" + fmt(lead) : fmt(sec);
     var rest;
-    if (total >= goal) {
+    if (lead > 0 && t.since) {
+      rest = "Gleich geht es los";
+    } else if (total >= goal) {
       var over = total - goal;
       rest = over > 0 ? "Ziel erreicht, " + fmt(over) + " darüber" : "Ziel erreicht";
     } else {
@@ -2466,6 +2682,7 @@ html.kb-open #view { padding-bottom: 60vh; }
 
   function tick() {
     if (!t) return;
+    if (!t.go && t.since && rawMs() >= LEAD_MS) { t.go = true; beepGo(); }
     if (!t.fired && t.since && baseSec() + elapsedMs() / 1000 >= goalSec()) alertGoal();
     paint();
   }
@@ -2482,6 +2699,7 @@ html.kb-open #view { padding-bottom: 60vh; }
       if (audio && audio.state === "suspended") audio.resume();
     } catch (e) { audio = null; }
     t.since = Date.now();
+    if (rawMs() < LEAD_MS && ui) ui.ann.textContent = "Gleich geht es los";
     if (baseSec() >= goalSec() && t.acc === 0) t.fired = true; /* Ziel schon vor dem Start erreicht: kein Signal */
     clearInterval(iv);
     iv = setInterval(tick, 250);
@@ -2554,7 +2772,7 @@ html.kb-open #view { padding-bottom: 60vh; }
     open: function (day, e) {
       if (!supports(e.unit)) return false;
       if (t) return t.day === day && t.id === e.id;
-      t = { day: day, id: e.id, name: e.name, unit: e.unit, target: e.target, acc: 0, since: null, fired: false, done: null };
+      t = { day: day, id: e.id, name: e.name, unit: e.unit, target: e.target, acc: 0, since: null, fired: false, go: false, done: null };
       return true;
     },
     closeIdle: function () { if (t && !active()) discard(); },
@@ -2592,12 +2810,20 @@ html.kb-open #view { padding-bottom: 60vh; }
 
     /* Aktuelle Serie: ab der laufenden Woche, falls sie schon geschafft ist, sonst ab der Woche davor */
     var w = weeks[cur] && weeks[cur].ok ? cur : prev(cur), now = 0;
-    while (weeks[w] && weeks[w].ok) { now++; w = prev(w); }
+    /* Eine Woche ohne Bericht, in der alle Trainingstage pausiert sind, wird übersprungen */
+    while (true) {
+      if (weeks[w] && weeks[w].ok) now++;
+      else if (!weeks[w] && App.pause.skipped(w)) { /* übersprungen */ }
+      else break;
+      w = prev(w);
+    }
 
     var best = 0, run = 0, last = null;
     order.forEach(function (k) {
       if (!weeks[k].ok) { run = 0; last = null; return; }
-      run = last && next(last) === k ? run + 1 : 1;
+      var n = last ? next(last) : null;
+      while (n && n < k && App.pause.skipped(n)) n = next(n);
+      run = last && n === k ? run + 1 : 1;
       last = k;
       if (run > best) best = run;
     });
@@ -2689,8 +2915,7 @@ html.kb-open #view { padding-bottom: 60vh; }
       dl.append(el("div", null, el("dt", { text: r[0] }), el("dd", { text: r[1] })));
     });
 
-    return el("section", { class: "card", id: "stats-card" },
-      el("h2", { text: "Serie und Bestwerte" }),
+    return App.fold("rst", "Serie und Bestwerte", "stats-card", [
       dl, dots,
       el("div", { class: "legend" },
         el("span", null, el("i", { class: "wk ok" }), "geschafft"),
@@ -2700,7 +2925,7 @@ html.kb-open #view { padding-bottom: 60vh; }
       el("p", { class: "hint", text: "Eine Woche zählt, wenn das Wochenziel 100 % erreicht. Eine Woche ohne Eintrag unterbricht die Serie, die laufende Woche nicht, solange sie noch läuft. Gezeigt werden die letzten " + STRIP + " Wochen." }),
       d.records.length ? el("h3", { text: "Bestwerte pro Übung" }) : null,
       d.records.length ? recs : null
-    );
+    ]);
   }
 
   App.stats = { compute: compute, card: card };
@@ -2708,17 +2933,17 @@ html.kb-open #view { padding-bottom: 60vh; }
 
 </script>
 <script>
-/* Aufklapper für Themenblöcke. App.fold(key, titel, id, kinder) liefert eine Karte, die anfangs zu ist.
+/* Aufklapper für Themenblöcke. App.fold(key, titel, id, kinder, offenAmAnfang) liefert eine Karte, die anfangs zu ist (außer offenAmAnfang ist wahr).
    Welche offen sind, merkt sich die App bis zum Neuladen (nach key). */
 (function () {
   "use strict";
   var el = App.el;
   var openSet = {};
 
-  function fold(key, title, domId, children) {
+  function fold(key, title, domId, children, startOpen) {
     var d = el("details", { class: "card fold", "data-fold": key });
     if (domId) d.id = domId;
-    d.open = !!openSet[key];
+    d.open = openSet[key] === undefined ? !!startOpen : !!openSet[key];
     d.addEventListener("toggle", function () { openSet[key] = d.open; });
     /* Der Klick kommt vor dem Umschalten und vor dem (verzögerten) toggle-Ereignis, so geht nichts verloren, wenn gleich neu gezeichnet wird */
     var sum = el("summary", null, el("h2", { text: title }));
@@ -2959,15 +3184,14 @@ html.kb-open #view { padding-bottom: 60vh; }
       var avg = chosen.reduce(function (s, r) { return s + r.agg.perfAll; }, 0) / chosen.length;
       var trend = diff === 0 ? "unverändert" : (diff > 0 ? "+" : "−") + Math.abs(diff) + " Punkte";
       var main = bars(items, scale(items.map(function (i) { return i.p; })), false);
-      var overall = el("section", { class: "card", id: "cmp-overall" },
-        el("h2", { text: "Gesamtleistung" }),
+      var overall = App.fold("cvo", "Gesamtleistung", "cmp-overall", [
         el("p", { class: "hint", text: "Leistung in Prozent vom Ziel, ältester Zeitraum links." }),
         el("div", { class: "legend" },
           el("span", null, el("i"), "unter dem Ziel"), el("span", null, el("i", { class: "g" }), "Ziel erreicht"),
           el("span", null, el("i", { class: "o" }), "über dem Ziel"), el("span", null, el("i", { class: "d" }), "100 %")),
         main[0], main[1],
         el("p", { class: "sum", id: "cmp-sum", text: "Ø " + C.pct(avg) + " % · Bestwert " + best.p + " % (" + best.title + ") · Verlauf von " + chosen[0].title + " zu " + chosen[chosen.length - 1].title + ": " + trend })
-      );
+      ], true);
       holder.append(overall);
 
       /* Je Übung: gleiche Namen und Einheiten werden zusammengefasst, wie in den Berichten */
@@ -2990,10 +3214,9 @@ html.kb-open #view { padding-bottom: 60vh; }
           var b = bars(per[k], mx, true);
           box.append(el("div", { class: "cmp-one", "data-ex": name }, el("h3", { text: name + (unit ? " (" + unit + ")" : "") }), b[0], b[1]));
         });
-        holder.append(el("section", { class: "card", id: "cmp-ex" },
-          el("h2", { text: "Je Übung" }),
+        holder.append(App.fold("cve", "Je Übung", "cmp-ex", [
           el("p", { class: "hint", text: "Gleiche Skala für alle Übungen. Eine Lücke heißt: in diesem Zeitraum gab es die Übung nicht." }),
-          box));
+          box]));
       }
 
       /* Tabelle: dieselben Zahlen zum Nachlesen und für Screenreader */
@@ -3018,6 +3241,150 @@ html.kb-open #view { padding-bottom: 60vh; }
   }
 
   App.compare = { view: view };
+})();
+
+</script>
+<script>
+/* Trainingskalender: eine Monatsansicht, in der jeder Tag nach Erfüllung gefärbt ist.
+   Daten: archivierte Wochen (App.reports.all()) plus die laufende Woche aus dem Plan.
+   Wochen ohne Bericht zwischen der ersten bekannten Woche und heute zählen die Trainingstage deines jetzigen Plans als verpasst. */
+(function () {
+  "use strict";
+  var el = App.el, C = App.calc;
+  var selDate = null;  /* gewählter Tag, bis zum Neuladen gemerkt */
+  var month = null;   /* erster Tag des gezeigten Monats, bis zum Neuladen gemerkt */
+
+  function ymd(d) { return C.ymd(d); }
+  function first(d) { return new Date(d.getFullYear(), d.getMonth(), 1); }
+  function monthOf(d, n) { return new Date(d.getFullYear(), d.getMonth() + n, 1); }
+
+  /* Karte Datum -> { state, pct, done, total }. state: ok, part, miss, open (heute, noch nichts), rest, future, none (unbekannt) */
+  function build() {
+    var st = App.store.state(), today = ymd(new Date()), cur = st.weekStart;
+    var byWeek = {}, firstW = cur;
+    App.reports.all().forEach(function (r) { byWeek[r.w] = r.d; if (r.w < firstW) firstW = r.w; });
+    byWeek[cur] = C.allDays(st);
+    var out = {}, pz = {};
+    st.pauses.forEach(function (d) { pz[d] = 1; });
+    var w = firstW;
+    while (w <= cur) {
+      var mon = C.parseYmd(w);
+      for (var i = 0; i < 7; i++) {
+        var key = ymd(C.addDays(mon, i));
+        var items = byWeek[w] ? byWeek[w][i] : (st.days[i] ? [] : null);   /* Woche ohne Bericht: jetziger Plan */
+        var gap = !byWeek[w];
+        if (pz[key]) { out[key] = { state: "pause" }; continue; }
+        if (key > today) { out[key] = { state: "future" }; continue; }
+        if (!items) { out[key] = { state: "rest" }; continue; }
+        var a = C.aggregate([items.length ? items : null]);
+        if (!items.length || !a.slots) { out[key] = { state: key === today ? "open" : "miss", pct: 0 }; continue; }
+        var pct = C.pct(a.perfAll);
+        if (a.fullDays === 1) out[key] = { state: "ok", pct: pct, done: a.reached, total: a.slots };
+        else if (a.started > 0) out[key] = { state: "part", pct: pct, done: a.reached, total: a.slots };
+        else out[key] = { state: key === today ? "open" : "miss", pct: 0, done: 0, total: a.slots };
+        if (gap) out[key].gap = true;
+      }
+      w = ymd(C.addDays(mon, 7));
+    }
+    /* Pausentage außerhalb des Zeitraums oben (zum Beispiel geplanter Urlaub) */
+    st.pauses.forEach(function (d) { if (!out[d]) out[d] = { state: "pause" }; });
+    return { days: out, firstW: firstW };
+  }
+
+  var WD = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
+  var NAME = { ok: "alle Ziele erreicht", part: "teilweise", miss: "nicht trainiert", open: "heute noch offen", rest: "Ruhetag", pause: "Pause", future: "noch nicht", none: "keine Daten" };
+
+  function mondayOf(date) { return ymd(C.addDays(C.parseYmd(date), -((C.parseYmd(date).getDay() + 6) % 7))); }
+
+  /* Pausieren geht für die laufende Woche und später sowie für Wochen ohne Bericht. Berichte vergangener Wochen ändern sich nicht. */
+  function canPause(date, x) {
+    var st = App.store.state();
+    if (x.state === "ok" || x.state === "part" || x.state === "none") return false;
+    if (date >= st.weekStart) return true;
+    var w = mondayOf(date);
+    return !st.reports.some(function (r) { return r.w === w; });
+  }
+
+  function card() {
+    var data = build();
+    var today = new Date();
+    if (!month) month = first(today);
+    var minM = first(C.parseYmd(data.firstW)), maxM = monthOf(first(today), 3);
+    if (month < minM) month = minM;
+    if (month > maxM) month = maxM;
+
+    var title = el("p", { class: "cal-title", id: "cal-title", "aria-live": "polite" });
+    var prev = el("button", { type: "button", class: "btn cal-nav", id: "cal-prev", "aria-label": "Vorheriger Monat", text: "‹" });
+    var next = el("button", { type: "button", class: "btn cal-nav", id: "cal-next", "aria-label": "Nächster Monat", text: "›" });
+    var grid = el("div", { class: "cal-grid", id: "cal-grid", role: "grid" });
+    var sum = el("p", { class: "hint", id: "cal-sum" });
+    var selBox = el("div", { class: "cal-sel", id: "cal-sel" });
+
+    function paintSel() {
+      selBox.replaceChildren();
+      if (!selDate) {
+        selBox.append(el("p", { class: "hint", text: "Tippe auf einen Tag, um ihn als Pause zu markieren, zum Beispiel bei Krankheit oder Urlaub." }));
+        return;
+      }
+      var dt = C.parseYmd(selDate), x = data.days[selDate] || { state: "none" };
+      var t = dt.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" }) + ": " + NAME[x.state] +
+        (x.state === "part" ? ", " + x.pct + " %" : "") + (x.total ? " (" + x.done + " von " + x.total + " Zielen)" : "") + ".";
+      selBox.append(el("p", { class: "cal-sel-t", id: "cal-sel-t", text: t }));
+      var st = App.store.state();
+      if (x.state === "pause") {
+        selBox.append(el("p", { class: "hint", text: "Pausentage zählen nicht als ausgelassen und unterbrechen keine Serie." }),
+          el("button", { type: "button", class: "btn", id: "cal-unpause", text: "Pause aufheben", onclick: function () { App.pause.set(selDate, false); App.rerender(); } }));
+      } else if (canPause(selDate, x)) {
+        selBox.append(el("button", { type: "button", class: "btn", id: "cal-pause", text: "Als Pause markieren", onclick: function () { App.pause.set(selDate, true); App.rerender(); } }));
+      } else {
+        selBox.append(el("p", { class: "hint", id: "cal-sel-no", text: x.state === "none" ? "Für diesen Tag gibt es keine Daten." : x.state === "ok" || x.state === "part" ? "Tage mit Einträgen lassen sich nicht pausieren." : "Berichte vergangener Wochen ändern sich nicht." }));
+      }
+    }
+
+    function paint() {
+      title.textContent = month.toLocaleDateString("de-DE", { month: "long", year: "numeric" });
+      prev.disabled = month <= minM;
+      next.disabled = month >= maxM;
+      grid.replaceChildren();
+      WD.forEach(function (n) { grid.append(el("span", { class: "cal-wd", role: "columnheader", text: n })); });
+      var lead = (month.getDay() + 6) % 7, dim = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
+      var tk = ymd(today), cnt = { ok: 0, part: 0, miss: 0, pause: 0 };
+      for (var i = 0; i < lead; i++) grid.append(el("span", { class: "cal-c blank", "aria-hidden": "true" }));
+      for (var d = 1; d <= dim; d++) {
+        var dt = new Date(month.getFullYear(), month.getMonth(), d), key = ymd(dt);
+        var x = data.days[key] || { state: "none" };
+        if (cnt[x.state] !== undefined) cnt[x.state]++;
+        var mark = x.state === "ok" ? "✓" : x.state === "part" ? x.pct + "%" : x.state === "miss" ? "×" : x.state === "pause" ? "Pause" : "";
+        var label = dt.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" }) + ": " + NAME[x.state] +
+          (x.state === "part" ? ", " + x.pct + " %" : "") + (x.total ? ", " + x.done + " von " + x.total + " Zielen" : "");
+        grid.append(el("button", { type: "button", class: "cal-c " + x.state + (key === tk ? " today" : "") + (key === selDate ? " sel" : ""), role: "gridcell", "data-d": key, "data-s": x.state, "aria-label": label, "aria-pressed": String(key === selDate),
+          onclick: (function (k) { return function () { selDate = selDate === k ? null : k; paint(); }; })(key) },
+          el("b", { text: String(d) }), el("small", { text: mark })));
+      }
+      var trained = cnt.ok + cnt.part + cnt.miss;
+      sum.textContent = (trained
+        ? cnt.ok + " von " + trained + " Trainingstagen komplett geschafft" + (cnt.part ? ", " + cnt.part + " teilweise" : "") + (cnt.miss ? ", " + cnt.miss + " ausgelassen" : "")
+        : "In diesem Monat gibt es noch keine Trainingstage mit Daten") + (cnt.pause ? ", " + cnt.pause + (cnt.pause === 1 ? " Pausentag" : " Pausentage") : "") + ".";
+      paintSel();
+    }
+    prev.addEventListener("click", function () { month = monthOf(month, -1); paint(); });
+    next.addEventListener("click", function () { month = monthOf(month, 1); paint(); });
+    paint();
+
+    return App.fold("cal", "Trainingskalender", "rep-cal", [
+      el("div", { class: "cal-head" }, prev, title, next),
+      grid, selBox, sum,
+      el("div", { class: "legend cal-legend" },
+        el("span", null, el("i", { class: "cal-k ok" }), "alles geschafft"),
+        el("span", null, el("i", { class: "cal-k part" }), "teilweise"),
+        el("span", null, el("i", { class: "cal-k miss" }), "ausgelassen"),
+        el("span", null, el("i", { class: "cal-k pause" }), "Pause"),
+        el("span", null, el("i", { class: "cal-k rest" }), "Ruhetag")),
+      el("p", { class: "hint", text: "Für Wochen ohne gespeicherten Bericht gelten die Trainingstage deines jetzigen Plans als ausgelassen." })
+    ]);
+  }
+
+  App.calendar = { card: card, build: build };
 })();
 
 </script>
@@ -3198,7 +3565,11 @@ html.kb-open #view { padding-bottom: 60vh; }
       var mon = C.parseYmd(r.w), wa = C.aggregate(r.d);
       var good = wa.slots > 0 && wa.perfAll >= DONE;
       if (!(r.live && !good)) {
-        if (lastW !== null && C.ymd(C.addDays(C.parseYmd(lastW), 7)) !== r.w) run = 0;
+        if (lastW !== null) {
+          var nx = C.ymd(C.addDays(C.parseYmd(lastW), 7));
+          while (nx < r.w && App.pause.skipped(nx)) nx = C.ymd(C.addDays(C.parseYmd(nx), 7));
+          if (nx !== r.w) run = 0;
+        }
         if (good) { run++; lastW = r.w; if (run > bestRun) bestRun = run; }
         else { run = 0; lastW = r.w; }
       }
@@ -3705,7 +4076,7 @@ html.kb-open #view { padding-bottom: 60vh; }
         val.classList.toggle("rest", !!o.rest);
         box.classList.remove("is-full", "is-over");
         if (o.rest) {
-          val.append("Ruhetag");
+          val.append(o.restText || "Ruhetag");
           fill.style.width = "0%";
           bar.style.visibility = "hidden";
         } else {
@@ -3799,7 +4170,7 @@ html.kb-open #view { padding-bottom: 60vh; }
         var items = C.dayItems(st, sel);
         var label = "Tagesziel · " + (sel === today ? "heute" : App.DAYS[sel].n);
         if (!items) {
-          mDay.set({ label: label, rest: true, rows: [] });
+          mDay.set({ label: label, rest: true, restText: st.days[sel] ? "Pause" : "Ruhetag", rows: [] });
         } else {
           var a = C.aggregate([items]);
           mDay.set({
@@ -3829,9 +4200,10 @@ html.kb-open #view { padding-bottom: 60vh; }
           c.btn.classList.toggle("full", p === 100);
           c.btn.classList.toggle("over", p !== null && p > 100);
           c.fill.style.width = p === null ? "0%" : Math.min(100, p) + "%";
-          c.dp.textContent = p === null ? "Ruhe" : p + "%";
+          var pz = !!st.days[i] && App.pause.is(App.pause.dateOfDay(i));
+          c.dp.textContent = p === null ? (pz ? "Pause" : "Ruhe") : p + "%";
           c.btn.setAttribute("aria-pressed", String(i === sel));
-          c.btn.setAttribute("aria-label", App.DAYS[i].n + (i === today ? ", heute" : "") + (p === null ? ", Ruhetag" : ", " + p + " Prozent"));
+          c.btn.setAttribute("aria-label", App.DAYS[i].n + (i === today ? ", heute" : "") + (p === null ? (pz ? ", Pause" : ", Ruhetag") : ", " + p + " Prozent"));
         });
       }
 
@@ -3970,9 +4342,18 @@ html.kb-open #view { padding-bottom: 60vh; }
         return box.childNodes.length ? box : document.createDocumentFragment();
       }
 
+      /* Pause nötig (Krankheit, Urlaub): der Tag zählt nicht als ausgelassen. Nur ohne Einträge an diesem Tag. */
+      function pauseBox(date) {
+        if (App.pause.hasProgress(date)) return document.createDocumentFragment();
+        return el("div", { class: "pausebox" },
+          el("button", { type: "button", class: "btn", id: "pause-on", text: "Pause nötig", onclick: function () { App.pause.set(date, true); buildPanel(); paintAll(); } }),
+          el("p", { class: "hint", text: "Krank oder unterwegs? Ein Pausentag zählt nicht als ausgelassen und unterbricht keine Serie." }));
+      }
+
       function buildPanel() {
         var st = S.state();
         var d = App.DAYS[sel], train = !!st.days[sel];
+        var date = App.pause.dateOfDay(sel), paused = train && App.pause.is(date);
         rows = [];
         /* Ein offener Timer, dessen Übung oder Tag es nicht mehr gibt oder keine Zeiteinheit mehr hat, wird verworfen */
         var cur = T.current();
@@ -3982,12 +4363,17 @@ html.kb-open #view { padding-bottom: 60vh; }
         }
         panel.replaceChildren(el("div", { class: "card-head" },
           el("h2", { text: (sel === today ? "Heute · " : "") + d.n }),
-          el("span", { class: "pill" + (train ? "" : " rest"), text: train ? (App.shift.note(sel) ? "Verschoben von " + App.DAYS[App.shift.note(sel).other].s : "Training") : "Ruhetag" })
+          el("span", { class: "pill" + (train && !paused ? "" : " rest"), text: paused ? "Pause" : train ? (App.shift.note(sel) ? "Verschoben von " + App.DAYS[App.shift.note(sel).other].s : "Training") : "Ruhetag" })
         ));
         if (cur && cur.day !== sel) {
           panel.append(el("p", { class: "tm-banner" },
             "Timer offen: " + cur.name + " (" + App.DAYS[cur.day].n + ") ",
             el("button", { type: "button", class: "btn", text: "Anzeigen", onclick: function () { sel = cur.day; buildPanel(); paintAll(); } })));
+        }
+        if (paused) {
+          panel.append(el("p", { class: "hint", id: "pause-info", text: (sel === today ? "Heute ist" : "Dieser Tag ist") + " als Pause markiert. Er zählt nicht als ausgelassen und unterbricht keine Serie." }),
+            el("div", null, el("button", { type: "button", class: "btn", id: "pause-off", text: "Pause aufheben", onclick: function () { App.pause.set(date, false); buildPanel(); paintAll(); } })));
+          return;
         }
         if (!train) {
           var mv = App.shift.note(sel);
@@ -4000,7 +4386,7 @@ html.kb-open #view { padding-bottom: 60vh; }
         }
         var ul = el("ul", { class: "xrows" });
         st.exercises.forEach(function (e) { ul.append(buildRow(e)); });
-        panel.append(ul, shiftBox(), noteBox());
+        panel.append(ul, shiftBox(), noteBox(), pauseBox(date));
         rows.forEach(paintTimer);
         T.onChange(function () { rows.forEach(paintToggle); });
       }
@@ -4035,6 +4421,7 @@ html.kb-open #view { padding-bottom: 60vh; }
       var list = el("div", { class: "exlist" });
       var live = el("p", { class: "vh", "aria-live": "polite", id: "ex-live" });
       var addBtn = el("button", { type: "button", class: "btn primary", text: "Übung hinzufügen", onclick: addExercise });
+      var arcWrap = el("div", { id: "ex-arc-wrap" });
 
       root.append(
         el("section", { class: "card" },
@@ -4048,7 +4435,8 @@ html.kb-open #view { padding-bottom: 60vh; }
           el("p", { class: "vh", id: "ex-help", text: "Alt plus Pfeil nach oben oder unten verschiebt die Übung, Entf löscht sie." }),
           list, live,
           el("div", null, addBtn)
-        )
+        ),
+        arcWrap
       );
 
       function say(t) { live.textContent = ""; setTimeout(function () { live.textContent = t; }, 30); }
@@ -4080,6 +4468,53 @@ html.kb-open #view { padding-bottom: 60vh; }
         S.touch();
         paintList({ sum: e.id });
         say(e.name + " ist jetzt Übung " + (to + 1) + " von " + st.exercises.length + ".");
+      }
+
+      /* Archiv: die Übung verschwindet aus Plan und Liste, behält aber Ziel, Einheit und MET-Wert. Berichte und Rekorde bleiben. */
+      function archive(e) {
+        var st = S.state(), idx = st.exercises.indexOf(e);
+        if (idx < 0) return;
+        st.exercises.splice(idx, 1);
+        st.archive.unshift(e);
+        if (st.archive.length > 50) st.archive.length = 50;
+        if (expanded === e.id) expanded = null;
+        S.touch();
+        var next = st.exercises[Math.min(idx, st.exercises.length - 1)];
+        paintList(next ? { sum: next.id } : { add: true });
+        paintArchive();
+        say(e.name + " ist jetzt im Archiv.");
+      }
+
+      function unarchive(e) {
+        var st = S.state(), idx = st.archive.indexOf(e);
+        if (idx < 0) return;
+        st.archive.splice(idx, 1);
+        st.exercises.push(e);
+        S.touch();
+        paintList({ sum: e.id });
+        paintArchive();
+        say(e.name + " ist wieder im Plan.");
+      }
+
+      function paintArchive() {
+        var st = S.state();
+        arcWrap.replaceChildren();
+        if (!st.archive.length) return;
+        var ul = el("ul", { class: "arc-list", id: "ex-arc" });
+        st.archive.forEach(function (e) {
+          ul.append(el("li", { "data-id": e.id },
+            el("span", { class: "arc-n" }, el("strong", { text: e.name }), el("span", { class: "hint", text: goalText(e) })),
+            el("button", { type: "button", class: "btn", text: "Zurückholen", "aria-label": e.name + " zurückholen", onclick: function () { unarchive(e); } }),
+            App.confirmButton("Löschen", "Wirklich löschen", function () {
+              var s2 = S.state();
+              s2.archive = s2.archive.filter(function (x) { return x.id !== e.id; });
+              S.touch(); paintArchive(); say(e.name + " wurde gelöscht.");
+            }, { "aria-label": e.name + " endgültig löschen" })));
+        });
+        arcWrap.append(App.fold("arc", "Archiv (" + st.archive.length + ")", "ex-archive", [
+          el("p", { class: "hint", text: "Archivierte Übungen sind nicht im Plan, behalten aber Ziel, Einheit und MET-Wert. Berichte und Rekorde bleiben erhalten." }),
+          ul
+        ]));
       }
 
       function remove(e) {
@@ -4166,10 +4601,55 @@ html.kb-open #view { padding-bottom: 60vh; }
           kcLab.textContent = "kcal pro " + PER[e.unit];
           kc.setAttribute("aria-label", "Kalorienverbrauch pro " + PER[e.unit] + " für " + e.name + ", leer für automatisch");
           kc.value = e.kcal ? fmtK(e.kcal) : "";
-          var w = App.persona.get().weight;
-          var auto = w > 0 ? App.health.autoPer(e.name, e.unit, w) : 0;
+          var w = App.health.currentKg();
+          var auto = w > 0 ? App.health.autoPer(e.name, e.unit, w, e.met, e.sec) : 0;
           kc.placeholder = auto > 0 ? "auto " + fmtK(Math.round(auto * 1000) / 1000) : "auto";
+          paintBasis();
         }
+
+        /* Berechnungsgrundlage: kcal = MET x Gewicht x Dauer. Ändert sich Gewicht oder MET, ändert sich der Wert von selbst. */
+        var metId = "ex-met-" + e.id, secId = "ex-sec-" + e.id;
+        var met = el("input", { type: "text", class: "in num", id: metId, inputmode: "decimal", maxlength: "6" });
+        var sec = el("input", { type: "text", class: "in num", id: secId, inputmode: "decimal", maxlength: "6" });
+        var secLine = el("div", { class: "line" }, el("label", { class: "lab", for: secId, text: "Sekunden je Wiederholung" }), sec);
+        var basis = el("p", { class: "hint kc-basis", id: "ex-basis-" + e.id });
+        function fmtN(n) { return n.toLocaleString("de-DE", { maximumFractionDigits: 2 }); }
+        function paintBasis() {
+          var d = App.health.defaults(e.name, e.unit), reps = e.unit === "Wdh.";
+          met.value = e.met ? fmtN(e.met) : "";
+          met.placeholder = "auto " + fmtN(d.met);
+          met.setAttribute("aria-label", "MET-Wert für " + e.name + ", leer für automatisch");
+          sec.value = e.sec ? fmtN(e.sec) : "";
+          sec.placeholder = reps ? "auto " + fmtN(d.sec) : "";
+          sec.setAttribute("aria-label", "Sekunden je Wiederholung für " + e.name + ", leer für automatisch");
+          secLine.hidden = !reps;
+          var w = App.health.currentKg();
+          var m = e.met || d.met, s = reps ? (e.sec || d.sec) : (e.unit === "Min." ? 60 : 1);
+          var t;
+          if (e.kcal) t = "Du hast einen eigenen kcal-Wert eingetragen, er hat Vorrang. Leere das Feld oben, dann wird mit dem MET-Wert gerechnet.";
+          else if (!(w > 0)) t = "Trage dein Gewicht unter Einstellungen ein, dann wird der Verbrauch automatisch berechnet.";
+          else t = "Rechnung: " + fmtN(m) + " MET × " + fmtN(w) + " kg × " + fmtN(s) + " s ÷ 3600 = " + fmtK(Math.round(m * w * s / 3600 * 1000) / 1000) + " kcal pro " + PER[e.unit] + ". Das Gewicht kommt aus deinem Gewichtsverlauf.";
+          basis.textContent = t;
+        }
+        function numField(input, key, clean) {
+          input.addEventListener("input", function () {
+            var t = input.value.trim().replace(",", ".");
+            if (t === "") { delete e[key]; S.touch(); paintBasisAndPlaceholder(); return; }
+            var n = clean(Number(t));
+            if (n) { e[key] = n; S.touch(); paintBasisAndPlaceholder(); }
+          });
+          input.addEventListener("blur", paintKcal);
+        }
+        function paintBasisAndPlaceholder() {
+          var w = App.health.currentKg();
+          var auto = w > 0 ? App.health.autoPer(e.name, e.unit, w, e.met, e.sec) : 0;
+          kc.placeholder = auto > 0 ? "auto " + fmtK(Math.round(auto * 1000) / 1000) : "auto";
+          var d = App.health.defaults(e.name, e.unit), reps = e.unit === "Wdh.";
+          var m = e.met || d.met, s = reps ? (e.sec || d.sec) : (e.unit === "Min." ? 60 : 1);
+          if (!e.kcal && w > 0) basis.textContent = "Rechnung: " + fmtN(m) + " MET × " + fmtN(w) + " kg × " + fmtN(s) + " s ÷ 3600 = " + fmtK(Math.round(m * w * s / 3600 * 1000) / 1000) + " kcal pro " + PER[e.unit] + ". Das Gewicht kommt aus deinem Gewichtsverlauf.";
+        }
+        numField(met, "met", S.cleanMet);
+        numField(sec, "sec", S.cleanSec);
         paintKcal();
         kc.addEventListener("input", function () {
           var t = kc.value.trim().replace(",", ".");
@@ -4178,6 +4658,7 @@ html.kb-open #view { padding-bottom: 60vh; }
           if (n) { e.kcal = n; S.touch(); }
         });
         kc.addEventListener("blur", paintKcal);
+        kc.addEventListener("input", paintBasis);
 
         unit.addEventListener("change", function () {
           var old = e.unit;
@@ -4211,7 +4692,12 @@ html.kb-open #view { padding-bottom: 60vh; }
         var panel = el("div", { class: "ex-panel", id: "ex-panel-" + e.id, hidden: !open },
           name,
           el("div", { class: "line" }, el("label", { class: "lab", for: tgtId, text: "Ziel" }), tgt, unit),
-          el("div", { class: "line" }, kcLab, kc)
+          el("div", { class: "line" }, kcLab, kc),
+          el("div", { class: "line" }, el("label", { class: "lab", for: metId, text: "MET-Wert (Anstrengung)" }), met),
+          secLine,
+          basis,
+          el("div", { class: "line ex-arcline" }, el("button", { type: "button", class: "btn", id: "ex-arch-" + e.id, text: "Archivieren", "aria-label": e.name + " archivieren", onclick: function () { archive(e); } }),
+            el("span", { class: "hint", text: "Aus dem Plan nehmen, ohne die Einstellungen zu verlieren." }))
         );
 
         return el("div", { class: "exitem" + (open ? " open" : ""), "data-id": e.id }, sum, panel);
@@ -4240,6 +4726,7 @@ html.kb-open #view { padding-bottom: 60vh; }
 
       paintDays();
       paintList();
+      paintArchive();
     }
   });
 })();
@@ -4416,8 +4903,7 @@ html.kb-open #view { padding-bottom: 60vh; }
     var avg = rated.reduce(function (s, r) { return s + r.agg.perfAll; }, 0) / (rated.length || 1);
     var unit = mode === "weeks" ? plural(rs.length, "Woche", "Wochen") : plural(rs.length, "Monat", "Monate");
 
-    return el("section", { class: "card" },
-      el("h2", { text: "Verlauf" }),
+    return App.fold("rvl", "Verlauf", "rep-verlauf", [
       el("p", { class: "hint", text: "Leistung in Prozent vom Ziel, " + (mode === "weeks" ? "pro Kalenderwoche" : "pro Monat") + "." }),
       el("div", { class: "legend" },
         el("span", null, el("i"), "unter dem Ziel"),
@@ -4427,7 +4913,7 @@ html.kb-open #view { padding-bottom: 60vh; }
       ),
       plot, xl,
       el("p", { class: "sum", text: unit + " · Ø " + C.pct(avg) + " % · Bestwert " + (best ? C.pct(best.agg.perfAll) + " % (" + best.title + ")" : "–") })
-    );
+    ]);
   }
 
   function dataCard() {
@@ -4487,6 +4973,33 @@ html.kb-open #view { padding-bottom: 60vh; }
     return card;
   }
 
+  /* Auf einen Blick: Wochenziel, Serie, Kalorien und Gewicht, ohne etwas aufzuklappen */
+  function summary() {
+    var st = App.store.state(), H = App.health;
+    var days = C.allDays(st), a = C.aggregate(days);
+    var p = a.slots ? C.pct(a.perfAll) : 0;
+    var serie = App.stats.compute(R.all(), st.weekStart).current;
+    var kg = H.currentKg();
+    var anyOwn = st.exercises.some(function (e) { return e.kcal > 0; });
+    var kcal = kg > 0 || anyOwn ? H.kcalDays(days, kg) : null;
+    var wl = App.weight.list(), P = App.persona.get();
+    var last = wl.length ? wl[wl.length - 1] : null;
+    var wText = last ? last.kg : P.weight;
+    var g = H.goalState(wl, P);
+    var wSub = g ? (g.reached ? "Ziel erreicht" : "Noch " + H.fmt1(g.left) + " kg bis zum Ziel") : (wText > 0 ? "aktuell" : "nicht eingetragen");
+    function tile(id, h, big, sub) {
+      return el("section", { class: "rec", id: id }, el("p", { class: "rec-h", text: h }), el("p", { class: "rec-big", text: big }), el("p", { class: "rec-sub", text: sub }));
+    }
+    var left = a.slots - a.reached;
+    return el("section", { class: "card", id: "rep-sum" },
+      el("h2", { text: "Auf einen Blick" }),
+      el("div", { class: "hv-two" },
+        tile("sum-week", "Diese Woche", p + " %", a.slots ? a.reached + " von " + a.slots + " Zielen erreicht" : "keine Trainingstage"),
+        tile("sum-streak", "Serie", String(serie), serie === 1 ? "Woche in Folge" : "Wochen in Folge"),
+        tile("sum-kcal", "Kalorien", kcal === null ? "–" : H.fmtKcal(kcal).replace("≈ ", ""), kcal === null ? "Gewicht fehlt" : "geschätzt, diese Woche"),
+        tile("sum-weight", "Gewicht", wText > 0 ? H.fmt1(wText) + " kg" : "–", wSub)));
+  }
+
   App.register({
     id: "berichte",
     label: "Berichte",
@@ -4510,13 +5023,13 @@ html.kb-open #view { padding-bottom: 60vh; }
         if (mode === "compare") { holder.append(App.compare.view(buildRows)); return; }
         var ul = el("ul", { class: "reports" });
         rs.slice().reverse().forEach(function (r) { ul.append(el("li", null, item(r))); });
-        holder.append(chartCard(rs), App.stats.card(), ul);
+        holder.append(chartCard(rs), App.stats.card(), App.fold(mode === "weeks" ? "rwo" : "rmo", mode === "weeks" ? "Wochenberichte" : "Monatsberichte", "rep-list", [ul]));
       }
 
       [["weeks", "Wochen"], ["months", "Monate"], ["compare", "Vergleich"]].forEach(function (m) {
         seg.append(el("button", { type: "button", "data-mode": m[0], text: m[1], onclick: function () { mode = m[0]; paint(); } }));
       });
-      root.append(seg, holder, App.health.card(), App.records.card(), App.badges.card(), dataCard());
+      root.append(summary(), seg, holder, App.calendar.card(), App.health.card(), App.records.card(), App.badges.card(), dataCard());
       paint();
     }
   });
@@ -4675,11 +5188,12 @@ html.kb-open #view { padding-bottom: 60vh; }
 
     return fold("bak", "Backup", null, [
       el("p", { class: "hint", text: "Sichert alles: Übungen, Trainingstage, Haken der Woche, Berichte und Einstellungen." }),
+      F.canShareFiles() ? el("p", { class: "hint", id: "bak-share-hint", text: "„Backup speichern“ öffnet das Teilen-Menü deines Handys. Wähle dort zum Beispiel Google Drive, Dateien oder eine E-Mail an dich selbst, dann liegt die Sicherung außerhalb der App." }) : null,
       el("div", { class: "btns" },
         el("button", { type: "button", class: "btn", text: "Backup speichern", onclick: function () {
           var name = "trainingswoche-backup-" + day + ".json";
           F.save(name, B.toJson(), "application/json").then(function (r) {
-            if (r === "ok") { App.reminder.markBackup(); rem.refresh(); say("Datei erstellt: " + name); }
+            if (r === "ok") { App.reminder.markBackup(); rem.refresh(); say(F.canShareFiles() ? "Backup weitergegeben: " + name : "Datei erstellt: " + name); }
             else if (r === "unsupported") say("Speichern ist hier nicht möglich. Nutze „Backup kopieren“.", true);
             else if (r === "error") say("Das Speichern hat nicht geklappt. Nutze „Backup kopieren“.", true);
           });
@@ -4822,8 +5336,34 @@ html.kb-open #view { padding-bottom: 60vh; }
 
 <script>
 if ("serviceWorker" in navigator) {
+  var hadController = !!navigator.serviceWorker.controller;
+  function showUpdate() {
+    if (document.getElementById("upd-bar")) return;
+    var bar = document.createElement("div");
+    bar.id = "upd-bar";
+    bar.setAttribute("role", "status");
+    bar.style.cssText = "position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:50;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:#0b63c9;color:#fff;font:600 14px system-ui,sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.35)";
+    var t = document.createElement("span");
+    t.textContent = "Neue Version bereit.";
+    t.style.flex = "1";
+    var go = document.createElement("button");
+    go.type = "button"; go.id = "upd-go"; go.textContent = "Neu laden";
+    go.style.cssText = "border:0;border-radius:8px;padding:8px 12px;font:inherit;background:#fff;color:#0b63c9;cursor:pointer";
+    go.addEventListener("click", function () { location.reload(); });
+    var x = document.createElement("button");
+    x.type = "button"; x.setAttribute("aria-label", "Schließen"); x.textContent = "×";
+    x.style.cssText = "border:0;background:transparent;color:#fff;font:inherit;font-size:20px;cursor:pointer;padding:0 4px";
+    x.addEventListener("click", function () { bar.remove(); });
+    bar.append(t, go, x);
+    document.body.append(bar);
+  }
+  /* Beim ersten Installieren übernimmt der Service Worker still, nur bei einem Update kommt der Hinweis */
+  navigator.serviceWorker.addEventListener("controllerchange", function () { if (hadController) showUpdate(); });
   window.addEventListener("load", function () {
-    navigator.serviceWorker.register("./sw.js").catch(function () {});
+    navigator.serviceWorker.register("./sw.js").then(function (reg) {
+      window.__swReg = reg;
+      document.addEventListener("visibilitychange", function () { if (!document.hidden) reg.update().catch(function () {}); });
+    }).catch(function () {});
   });
 }
 </script>
