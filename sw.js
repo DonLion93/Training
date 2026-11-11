@@ -1,5 +1,5 @@
 /* Service Worker: macht die App offline nutzbar. Wird beim Bauen erzeugt (build_pwa2.py), nicht von Hand ändern. */
-const CACHE = "trainingswoche-1.27.0-b02143ab";
+const CACHE = "trainingswoche-1.30.0-913fbdf8";
 const FONTS = "trainingswoche-fonts";
 const ASSETS = [
   "./",

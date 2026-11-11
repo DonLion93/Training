@@ -70,6 +70,7 @@ body {
 }
 </style>
 <style>
+[hidden] { display: none !important; }
 * { box-sizing: border-box; }
 button, input, select { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -93,15 +94,26 @@ h2 { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: 2
 
 /* Fortschritt */
 .meters { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.m-label { margin: 0; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
-.m-val { font-family: var(--font-display); font-weight: 700; font-size: 60px; line-height: 0.9; font-variant-numeric: tabular-nums; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px; }
-.m-val small { font-size: 26px; color: var(--muted); }
-.m-val.rest { font-size: 38px; color: var(--muted); }
+.ring-tile { display: grid; gap: 6px; justify-items: center; padding: 12px 10px 14px; text-align: center; font: inherit; color: inherit; cursor: pointer; min-width: 0; }
+.m-label { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.ring-wrap { position: relative; width: min(100%, 150px); aspect-ratio: 1; }
+.ring { display: block; width: 100%; height: 100%; }
+.ring-t { stroke: var(--track); }
+.ring-p { transition: stroke-dashoffset 0.5s ease, opacity 0.2s; }
+.ring-mid { position: absolute; inset: 0; display: grid; place-items: center; }
+.m-val { font-family: var(--font-display); font-weight: 700; font-size: clamp(24px, 8vw, 34px); line-height: 1; font-variant-numeric: tabular-nums; display: flex; align-items: baseline; gap: 1px; }
+.m-val small { font-size: 0.5em; color: var(--muted); }
+.m-val.rest { font-size: 17px; color: var(--muted); }
+.dt-body { display: grid; gap: 14px; }
+.dt-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; }
+.dt-big { font-family: var(--font-display); font-weight: 700; font-size: 56px; line-height: 1; display: flex; align-items: baseline; gap: 2px; }
+.dt-big small { font-size: 26px; color: var(--muted); }
+.dt-rest { font-size: 24px; font-weight: 700; color: var(--muted); }
+.dt-stats div { font-size: 15px; }
+.dlg .btns.one { grid-template-columns: 1fr; }
 .over-chip { margin-left: 8px; font-family: var(--font-body); font-size: 13px; font-weight: 600; line-height: 1.3; padding: 3px 9px; border-radius: 999px; background: var(--over-soft); color: var(--over); }
 .bar { height: 12px; border-radius: 6px; background: var(--track); overflow: hidden; }
-.bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width 0.35s ease; }
-.is-full .bar i { background: var(--good); }
-.is-over .bar i { background: var(--over); }
+.bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--c0, var(--accent)), var(--c1, var(--accent))); transition: width 0.35s ease; }
 .stats { margin: 0; display: grid; gap: 5px; }
 .stats div { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 13px; }
 .stats dt { color: var(--muted); min-width: 0; }
@@ -114,15 +126,13 @@ button.day { background: transparent; cursor: pointer; }
 .day[aria-pressed="true"] { background: var(--surface); border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
 .dn { display: inline-flex; align-items: center; gap: 4px; }
 .dn .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
-.day.full .pb i { background: var(--good); }
-.day.over .pb i { background: var(--over); }
 .day.over .dp { color: var(--over); font-weight: 600; }
 .day.rest { border-style: dashed; }
 .day.rest .dn, .day.rest .dp { color: var(--muted); }
 .dn { font-weight: 600; font-size: 14px; }
 .dp { font-size: 11px; color: var(--muted); }
 .pb { width: 70%; height: 4px; border-radius: 2px; background: var(--track); overflow: hidden; }
-.pb i { display: block; height: 100%; width: 0; background: var(--accent); }
+.pb i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--c0, var(--accent)), var(--c1, var(--accent))); }
 .day.rest .pb { background: transparent; }
 .pb.on { background: var(--accent); }
 .dp:empty::before { content: "\00a0"; }
@@ -153,9 +163,7 @@ button.day { background: transparent; cursor: pointer; }
 .cnt input { width: 68px; padding: 7px 8px; border: 1px solid var(--line); border-radius: 7px; background: var(--bg); text-align: right; font-variant-numeric: tabular-nums; font-size: 16px; }
 .of { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 2.2em; }
 .rb { grid-column: 2 / -1; height: 3px; border-radius: 2px; background: var(--track); overflow: hidden; }
-.rb i { display: block; height: 100%; width: 0; background: var(--accent); transition: width 0.25s ease; }
-.xrow[data-done="true"] .rb i { background: var(--good); }
-.xrow[data-over="true"] .rb i { background: var(--over); }
+.rb i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--c0, var(--accent)), var(--c1, var(--accent))); transition: width 0.25s ease; }
 
 /* Timer */
 .tm-toggle { flex: none; display: grid; place-items: center; width: 38px; height: 38px; padding: 0; border: 1px solid var(--line); border-radius: 50%; background: none; color: var(--muted); cursor: pointer; }
@@ -241,15 +249,14 @@ button.day { background: transparent; cursor: pointer; }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--muted); }
 .legend span { display: inline-flex; align-items: center; gap: 6px; }
 .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; background: var(--accent); }
+.legend i.bd { background: linear-gradient(135deg, var(--c0), var(--c1)); }
 .legend i.g { background: var(--good); }
 .legend i.o { background: var(--over); }
 .legend i.d { width: 16px; height: 0; border-radius: 0; background: transparent; border-top: 2px dashed var(--muted); }
 .plot { position: relative; height: 130px; display: flex; align-items: flex-end; gap: 5px; border-bottom: 1px solid var(--line); margin-top: 6px; }
 .goal { position: absolute; left: 0; right: 0; border-top: 1px dashed var(--muted); pointer-events: none; }
 .col { flex: 1 1 0; min-width: 0; height: 100%; display: flex; align-items: flex-end; justify-content: center; }
-.col .b { position: relative; width: 100%; max-width: 30px; min-height: 2px; border-radius: 4px 4px 0 0; background: var(--accent); }
-.col.full .b { background: var(--good); }
-.col.over .b { background: var(--over); }
+.col .b { position: relative; width: 100%; max-width: 30px; min-height: 2px; border-radius: 4px 4px 0 0; background: linear-gradient(0deg, var(--c0, var(--accent)), var(--c1, var(--accent))); }
 .col.live .b { opacity: 0.55; }
 .col .v { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); font-size: 10px; line-height: 1.6; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .xl { display: flex; gap: 5px; }
@@ -348,11 +355,10 @@ textarea.in { width: 100%; resize: vertical; font: 13px/1.4 ui-monospace, Menlo,
 .tab[aria-current="page"] .ic { background: var(--accent-soft); color: var(--accent); }
 
 @media (prefers-reduced-motion: reduce) {
-  .bar i, .rb i { transition: none; }
+  .bar i, .rb i, .ring-p { transition: none; }
 }
 @media (max-width: 560px) {
   h1 { font-size: 34px; }
-  .meters { grid-template-columns: 1fr; }
 }
 
 /* Aufklappbare Themenblöcke in den Einstellungen */
@@ -507,9 +513,9 @@ html.kb-open #view { padding-bottom: 60vh; }
 .cal-c b { font-weight: 600; line-height: 1.1; }
 .cal-c small { font-size: 10px; line-height: 1.1; min-height: 11px; color: var(--muted); }
 .cal-c.blank { border: 0; }
-.cal-c.ok { background: color-mix(in srgb, var(--good) 32%, var(--surface)); border-color: var(--good); }
+.cal-c.ok { background: color-mix(in srgb, var(--c1, var(--good)) 32%, var(--surface)); border-color: var(--c1, var(--good)); }
 .cal-c.ok small { color: var(--ink); font-weight: 700; }
-.cal-c.part { background: var(--accent-soft); border-color: var(--accent); }
+.cal-c.part { background: color-mix(in srgb, var(--c1, var(--accent)) 24%, var(--surface)); border-color: var(--c1, var(--accent)); }
 .cal-c.miss { border: 2px dashed var(--muted); }
 .cal-c.rest { background: color-mix(in srgb, var(--muted) 12%, transparent); color: var(--muted); }
 .cal-c.future, .cal-c.none { color: var(--muted); opacity: .55; }
@@ -536,6 +542,16 @@ html.kb-open #view { padding-bottom: 60vh; }
 .arc-n { display: grid; min-width: 0; flex: 1 1 140px; }
 .ex-arcline { flex-wrap: wrap; gap: 8px; align-items: center; }
 .ex-arcline .hint { margin: 0; flex: 1 1 140px; }
+
+/* Benachrichtigungen */
+.ntf-block { display: grid; gap: 8px; padding: 12px 0; border-top: 1px solid var(--line); justify-items: start; }
+.ntf-block .hint { margin: 0; }
+.ntf-block .line { width: 100%; }
+.ntf-text .in { flex: 1 1 200px; min-width: 0; }
+.in.time { width: auto; min-width: 120px; }
+.ntf-block input:disabled { opacity: .5; }
+.ntf-check { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; cursor: pointer; }
+.ntf-check input { width: 20px; height: 20px; accent-color: var(--accent); }
 
 </style>
 </head>
@@ -681,9 +697,21 @@ html.kb-open #view { padding-bottom: 60vh; }
 (function () {
   "use strict";
 
-  App.version = "1.27.0";
+  App.version = "1.30.0";
 
   App.changelog = [
+    { v: "1.30.0", date: "2026-11-11", items: [
+      "Neu: Das Farbschema der Ringe gilt jetzt für alle Prozentanzeigen: Balken der Übungen, Tagesleiste im Trainingsplan und in den Berichten, Berichtsbalken, Diagramme im Verlauf und Vergleich sowie die Tage im Trainingskalender. Bis 20 % rot, bis 50 % orange, bis 90 % gelb, bis 99 % hellgrün, 100 % grün, darüber violett, jeweils mit Verlauf.",
+      "Die Legende der Diagramme zeigt jetzt diese Farbstufen."
+    ] },
+    { v: "1.29.0", date: "2026-11-11", items: [
+      "Neu: Tag und Woche im Trainingsplan sind jetzt zwei Ring-Kacheln nebeneinander. Der Ring füllt sich mit dem Fortschritt und ändert die Farbe: bis 20 % rot, bis 50 % orange, bis 90 % gelb, bis 99 % hellgrün, bei 100 % grün und darüber violett.",
+      "Ein Tipp auf eine Kachel öffnet ein Fenster mit den Details (erreichte Übungen, Leistung, geschätzte Kalorien)."
+    ] },
+    { v: "1.28.0", date: "2026-11-11", items: [
+      "Neu: Benachrichtigungen (Erinnerungen) in der Android-App. Unter Einstellungen > Benachrichtigungen lassen sich zwei Erinnerungen ein- und ausschalten und in Uhrzeit und Text anpassen: abends an Trainingstagen („nicht aufgeben, du bist fast am Ziel“, wenn der Tag noch keine 100 % hat) und sonntags („ab auf die Waage“, wenn noch kein Gewicht eingetragen ist). {name} im Text wird durch deinen Spitznamen ersetzt.",
+      "Wer sein Training oder Gewicht einträgt, nimmt die Meldung dieses Tages damit zurück. Pausentage lösen keine Meldung aus."
+    ] },
     { v: "1.27.0", date: "2026-11-11", items: [
       "Neu: Pausentage. Im Trainingsplan gibt es „Pause nötig“, im Trainingskalender tippst du einen Tag an und markierst ihn als Pause (auch für geplanten Urlaub). Ein Pausentag zählt nicht als ausgelassen und hat keine Ziele. Eine Woche, in der alle Trainingstage pausiert sind, unterbricht die Serie nicht. Berichte vergangener Wochen ändern sich nicht.",
       "Neu: Übungen archivieren. In der aufgeklappten Übung gibt es „Archivieren“. Die Übung verschwindet aus dem Plan, behält aber Ziel, Einheit, kcal und MET-Wert und lässt sich im Archiv mit einem Tipp zurückholen. Berichte und Rekorde bleiben wie sie sind."
@@ -944,6 +972,35 @@ html.kb-open #view { padding-bottom: 60vh; }
     return x >= 0.9999 ? Math.round(x * 100) : Math.min(99, Math.round(x * 100));
   }
 
+  /* Einheitliche Farbstufen für alle Prozentanzeigen: [hell, kräftig].
+     Bis 20 % rot, bis 50 % dunkelorange, bis 90 % gelb, bis 99 % hellgrün, bei 100 % grün, darüber violett. */
+  var BANDS = [
+    [20, "#ff7a6b", "#d92d20"],
+    [50, "#f5a04a", "#c2570c"],
+    [90, "#ffe066", "#e0b100"],
+    [99, "#c5e86c", "#8cc63f"],
+    [100, "#5fd68a", "#1f9d55"],
+    [Infinity, "#c39bff", "#7c3aed"]
+  ];
+  function band(p) { for (var i = 0; i < BANDS.length; i++) if (p <= BANDS[i][0]) return BANDS[i]; return BANDS[BANDS.length - 1]; }
+  /* Setzt die Farbvariablen --c0/--c1 am Element; das CSS macht daraus Verlauf, Rand oder Hintergrund */
+  function tint(node, p) {
+    if (p === null || p === undefined || isNaN(p)) { node.style.removeProperty("--c0"); node.style.removeProperty("--c1"); return node; }
+    var b = band(p);
+    node.style.setProperty("--c0", b[1]); node.style.setProperty("--c1", b[2]);
+    return node;
+  }
+
+  /* Legende der Farbstufen für Diagramme: Liste von <span>-Elementen */
+  var STEPS = [[20, "bis 20 %"], [50, "bis 50 %"], [90, "bis 90 %"], [99, "bis 99 %"], [100, "100 %"], [101, "über 100 %"]];
+  function legendItems() {
+    return STEPS.map(function (s) {
+      var i = App.el("i", { class: "bd" });
+      tint(i, s[0]);
+      return App.el("span", null, i, s[1]);
+    });
+  }
+
   function doneOf(st, day, id) {
     var d = st.done[day];
     var v = d && d[id];
@@ -1007,7 +1064,7 @@ html.kb-open #view { padding-bottom: 60vh; }
   function fmtDay(d) { return d.toLocaleDateString("de-DE", { day: "numeric", month: "short" }); }
 
   App.calc = {
-    pct: pct, doneOf: doneOf, dayItems: dayItems, allDays: allDays, aggregate: aggregate,
+    pct: pct, band: band, tint: tint, legendItems: legendItems, doneOf: doneOf, dayItems: dayItems, allDays: allDays, aggregate: aggregate,
     ymd: ymd, parseYmd: parseYmd, addDays: addDays, isoWeek: isoWeek, fmtDay: fmtDay
   };
 })();
@@ -1050,7 +1107,7 @@ html.kb-open #view { padding-bottom: 60vh; }
       notes: {},
       reports: [],
       weights: [],
-      settings: { theme: "system", accent: null, profile: { gender: null, height: null, weight: null, target: null, nick: "" } },
+      settings: { theme: "system", accent: null, profile: { gender: null, height: null, weight: null, target: null, nick: "" }, notify: cleanNotify(null) },
       updatedAt: 0
     };
   }
@@ -1185,8 +1242,26 @@ html.kb-open #view { padding-bottom: 60vh; }
     return {
       theme: ["light", "dark", "black"].indexOf(s.theme) >= 0 ? s.theme : "system",
       accent: typeof s.accent === "string" && /^#[0-9a-fA-F]{6}$/.test(s.accent) ? s.accent.toLowerCase() : null,
-      profile: cleanProfile(s.profile)
+      profile: cleanProfile(s.profile),
+      notify: cleanNotify(s.notify)
     };
+  }
+
+  /* Erinnerungen (Benachrichtigungen der Android-App): je Art an/aus, Uhrzeit HH:MM und Text mit dem Platzhalter {name} für den Spitznamen */
+  var NOTIFY_DEFAULTS = {
+    train: { on: true, time: "20:00", text: "Hey {name}, nicht aufgeben, du bist fast am Ziel!" },
+    weight: { on: true, time: "18:00", text: "Hey {name}, ab auf die Waage - hinterlege dein aktuelles Gewicht" }
+  };
+  var TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
+  function cleanNotify(raw) {
+    raw = raw && typeof raw === "object" ? raw : {};
+    var out = {};
+    Object.keys(NOTIFY_DEFAULTS).forEach(function (k) {
+      var d = NOTIFY_DEFAULTS[k], r = raw[k] && typeof raw[k] === "object" ? raw[k] : {};
+      var text = typeof r.text === "string" ? r.text.replace(/[\u0000-\u001F\u007F]/g, " ").replace(/\s+/g, " ").trim().slice(0, 140) : "";
+      out[k] = { on: typeof r.on === "boolean" ? r.on : d.on, time: typeof r.time === "string" && TIME_RE.test(r.time) ? r.time : d.time, text: text || d.text };
+    });
+    return out;
   }
 
   /* Körperwerte, die zu einem Bericht gehören: Gewicht (kg) und Größe (cm), jeweils optional */
@@ -1267,7 +1342,7 @@ html.kb-open #view { padding-bottom: 60vh; }
   var localOk = true, lastSaved = 0, lastError = "";
   var local = loadLocal();
   var state = local || defaults();
-  var hooks = [], adoptHooks = [];
+  var hooks = [], adoptHooks = [], changeHooks = [];
   var dirty = false, timer = null, writing = false, again = false;
   var docRef = null;
 
@@ -1322,11 +1397,16 @@ html.kb-open #view { padding-bottom: 60vh; }
     if (timer) { clearTimeout(timer); flush(); }
   }
 
+  function fireChange() {
+    changeHooks.forEach(function (fn) { try { fn(); } catch (e) { /* ein Modul darf das Speichern nicht stören */ } });
+  }
+
   function touch() {
     state.updatedAt = Date.now();
     dirty = true;
     saveLocal();
     schedule();
+    fireChange();
   }
 
   function check() {
@@ -1381,6 +1461,7 @@ html.kb-open #view { padding-bottom: 60vh; }
     saveLocal();
     schedule();
     adoptHooks.forEach(function (fn) { fn(); });
+    fireChange();
   }
 
   App.store = {
@@ -1401,7 +1482,10 @@ html.kb-open #view { padding-bottom: 60vh; }
     cloud: HAS_CLOUD,
     info: function () { return { cloud: HAS_CLOUD, connected: !!docRef, dirty: dirty, lastSaved: lastSaved, lastError: lastError, localOk: localOk }; },
     onRollover: function (fn) { hooks.push(fn); },
-    onAdopt: function (fn) { adoptHooks.push(fn); }
+    onAdopt: function (fn) { adoptHooks.push(fn); },
+    onChange: function (fn) { changeHooks.push(fn); },
+    cleanNotify: cleanNotify,
+    NOTIFY_DEFAULTS: NOTIFY_DEFAULTS
   };
 
   /* Start */
@@ -1620,6 +1704,32 @@ html.kb-open #view { padding-bottom: 60vh; }
     try { return !!(window.matchMedia && matchMedia("(pointer: coarse)").matches); } catch (e) { return false; }
   }
 
+  /* In der Android-App (Capacitor): Datei im Zwischenspeicher anlegen und über das Teilen-Menü weitergeben.
+     Ein normaler Download funktioniert in dieser Umgebung nicht. */
+  function nativePlugins() {
+    var c = window.Capacitor;
+    try { if (!c || !c.isNativePlatform || !c.isNativePlatform()) return null; } catch (e) { return null; }
+    function get(name) {
+      try {
+        if (c.Plugins && c.Plugins[name]) return c.Plugins[name];
+        if (typeof c.registerPlugin === "function") return c.registerPlugin(name);
+      } catch (e) { /* kein Plugin */ }
+      return null;
+    }
+    var fs = get("Filesystem"), sh = get("Share");
+    return fs && sh ? { Filesystem: fs, Share: sh } : null;
+  }
+
+  function viaNative(P, name, text) {
+    return Promise.resolve().then(function () {
+      return P.Filesystem.writeFile({ path: name, data: text, directory: "CACHE", encoding: "utf8" });
+    }).then(function (r) {
+      return P.Share.share({ title: name, dialogTitle: "Speichern oder senden", files: [r.uri] }).then(function () { return "ok"; }, function (e) {
+        return /cancel/i.test(String(e && (e.message || e))) ? "cancel" : "error";
+      });
+    }, function () { return "error"; });
+  }
+
   function viaBrowser(name, text, mime) {
     function download() {
       try {
@@ -1649,7 +1759,10 @@ html.kb-open #view { padding-bottom: 60vh; }
 
   /* Ergebnis: "ok", "cancel", "unsupported" oder "error" */
   function save(name, text, mime) {
-    if (!IN_VIEWER) return viaBrowser(name, text, mime);
+    if (!IN_VIEWER) {
+      var P = nativePlugins();
+      return P ? viaNative(P, name, text) : viaBrowser(name, text, mime);
+    }
     return window.claude.use("downloads").then(function (dl) {
       if (!dl) return "unsupported";
       return dl.save({ filename: name, data: text }).then(function () { return "ok"; }, function (e) {
@@ -1738,7 +1851,7 @@ html.kb-open #view { padding-bottom: 60vh; }
     return { node: node, say: say };
   }
 
-  App.files = { canShareFiles: function () { try { return !IN_VIEWER && (standalone() || mobile()) && !!navigator.canShare && !!window.File && navigator.canShare({ files: [new File(["x"], "x.json", { type: "application/json" })] }); } catch (e) { return false; } }, save: save, copy: copy, read: read, importBox: importBox };
+  App.files = { canShareFiles: function () { if (nativePlugins()) return true; try { return !IN_VIEWER && (standalone() || mobile()) && !!navigator.canShare && !!window.File && navigator.canShare({ files: [new File(["x"], "x.json", { type: "application/json" })] }); } catch (e) { return false; } }, save: save, copy: copy, read: read, importBox: importBox };
 })();
 
 </script>
@@ -3009,7 +3122,33 @@ html.kb-open #view { padding-bottom: 60vh; }
     });
   }
 
-  App.dialog = { confirm: confirm };
+  /* Infofenster ohne Entscheidung: App.dialog.info({ title, body: Knoten }). Schließen mit Knopf, Escape oder Tippen daneben. */
+  function info(o) {
+    var id = "dlg" + (++n);
+    var prevFocus = document.activeElement, prevOverflow = document.body.style.overflow;
+    var close = el("button", { type: "button", class: "btn", text: "Schließen" });
+    var box = el("div", { class: "dlg dlg-info", role: "dialog", "aria-modal": "true", "aria-labelledby": id + "-t" },
+      el("h2", { id: id + "-t", text: o.title }), o.body, el("div", { class: "btns one" }, close));
+    var back = el("div", { class: "dlg-back" }, box);
+    function done() {
+      document.removeEventListener("keydown", key, true);
+      back.remove();
+      document.body.style.overflow = prevOverflow;
+      try { if (prevFocus && document.contains(prevFocus)) prevFocus.focus(); } catch (e) { /* egal */ }
+    }
+    function key(ev) {
+      if (ev.key === "Escape") { ev.preventDefault(); ev.stopPropagation(); done(); }
+      else if (ev.key === "Tab") { ev.preventDefault(); close.focus(); }
+    }
+    close.addEventListener("click", done);
+    back.addEventListener("click", function (ev) { if (ev.target === back) done(); });
+    document.addEventListener("keydown", key, true);
+    document.body.style.overflow = "hidden";
+    document.body.append(back);
+    close.focus();
+  }
+
+  App.dialog = { confirm: confirm, info: info };
 })();
 
 </script>
@@ -3084,6 +3223,231 @@ html.kb-open #view { padding-bottom: 60vh; }
 
 </script>
 <script>
+/* Benachrichtigungen (Erinnerungen). Gedacht für die Android-App (Capacitor, Plugin "LocalNotifications"): dort plant das Handy
+   die Meldungen selbst, ohne Server. Im Browser und in der installierten Web-App gibt es sie nicht, die Einstellungen lassen sich aber schon bearbeiten.
+   Zwei Arten:
+   - Training: an einem Trainingstag, zur eingestellten Uhrzeit (Standard 20:00), wenn der Tag noch keine 100 % hat.
+   - Gewicht: sonntags, zur eingestellten Uhrzeit (Standard 18:00), wenn für den Tag noch kein Gewicht eingetragen ist.
+   Ein Handy kann eine Meldung nicht "nur wenn" auslösen. Deshalb plant die App die Meldungen der nächsten 14 Tage im Voraus
+   und rechnet bei jeder Änderung neu: Wer sein Training oder Gewicht einträgt, nimmt die Meldung dieses Tages damit zurück.
+   Öffnet man die App länger als 14 Tage nicht, laufen die geplanten Meldungen aus. */
+(function () {
+  "use strict";
+  var el = App.el, C = App.calc, S = App.store;
+  var DAYS_AHEAD = 14, CHANNEL = "erinnerungen", TEST_ID = 1;
+  var KIND = { train: 1, weight: 2 };
+  var TITLE = { train: "Training", weight: "Gewicht" };
+
+  function cfg() { return S.state().settings.notify; }
+
+  /* {name} wird zum Spitznamen. Ohne Spitznamen entfällt er samt Leerzeichen: "Hey {name}, los" wird "Hey, los". */
+  function render(text, nick) {
+    if (nick) return text.replace(/\{name\}/g, nick);
+    return text.replace(/\s*\{name\}/g, "").replace(/^\s*[,.!:;-]\s*/, "").trim();
+  }
+
+  function atTime(day, hhmm) {
+    var p = hhmm.split(":");
+    return new Date(day.getFullYear(), day.getMonth(), day.getDate(), +p[0], +p[1], 0, 0);
+  }
+
+  /* Wochentag eines Datums, 0 = Montag */
+  function wdOf(d) { return (d.getDay() + 6) % 7; }
+
+  /* Reine Rechnung: welche Meldungen sind ab jetzt geplant? st = Stand, now = Zeitpunkt, nick = Spitzname */
+  function plan(st, now, nick) {
+    var n = st.settings.notify, out = [];
+    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var base = st.shift ? st.shift.base : st.days;           /* Trainingstage für Wochen nach der laufenden */
+    var weights = {};
+    st.weights.forEach(function (x) { weights[x.d] = 1; });
+    for (var i = 0; i < DAYS_AHEAD; i++) {
+      var day = C.addDays(today, i), key = C.ymd(day), wd = wdOf(day);
+      var mon = C.ymd(C.addDays(day, -wd)), cur = mon === st.weekStart;
+      if (n.train.on) {
+        var at = atTime(day, n.train.time);
+        if (at > now) {
+          var train = cur ? !!st.days[wd] : !!base[wd];
+          var paused = st.pauses.indexOf(key) >= 0;
+          var open = true;
+          if (cur) {
+            var items = C.dayItems(st, wd), a = items ? C.aggregate([items]) : null;
+            open = !!a && a.slots > 0 && C.pct(a.perfAll) < 100;
+          }
+          if (train && !paused && open) out.push({ key: key, kind: "train", at: at, body: render(n.train.text, nick) });
+        }
+      }
+      if (n.weight.on && wd === 6) {
+        var wat = atTime(day, n.weight.time);
+        if (wat > now && !weights[key]) out.push({ key: key, kind: "weight", at: wat, body: render(n.weight.text, nick) });
+      }
+    }
+    out.forEach(function (x) { x.id = Number(x.key.replace(/-/g, "")) * 10 + KIND[x.kind]; x.title = TITLE[x.kind]; });
+    return out;
+  }
+
+  /* --- Brücke zum Handy --- */
+  function plugin() {
+    var c = window.Capacitor;
+    try { if (!c || !c.isNativePlatform || !c.isNativePlatform()) return null; } catch (e) { return null; }
+    /* Je nach Capacitor-Version steht das Plugin unter Capacitor.Plugins oder wird über registerPlugin geholt */
+    try {
+      if (c.Plugins && c.Plugins.LocalNotifications) return c.Plugins.LocalNotifications;
+      if (typeof c.registerPlugin === "function") return c.registerPlugin("LocalNotifications");
+    } catch (e) { /* kein Plugin */ }
+    return null;
+  }
+
+  var perm = null;            /* "granted", "denied", "prompt" oder null (unbekannt) */
+  var busy = false, again = false, asked = false, timer = null, statusNode = null, allowNode = null;
+
+  function paintStatus() {
+    if (!statusNode) return;
+    var txt;
+    if (!plugin()) txt = "Die Erinnerungen funktionieren in der Android-App. Hier im Browser kannst du sie schon einstellen, sie werden aber nicht gesendet.";
+    else if (perm === "granted") txt = "Benachrichtigungen sind erlaubt.";
+    else if (perm === "denied") txt = "Benachrichtigungen sind für die App ausgeschaltet. Erlaube sie in den Handy-Einstellungen unter Apps > Trainingswoche > Benachrichtigungen.";
+    else txt = "Die App braucht noch die Erlaubnis für Benachrichtigungen.";
+    statusNode.textContent = txt;
+    if (allowNode) allowNode.hidden = !(plugin() && perm !== "granted" && perm !== "denied");
+  }
+
+  function run() {
+    var P = plugin();
+    if (!P) return;
+    if (busy) { again = true; return; }
+    busy = true;
+    var list = plan(S.state(), new Date(), App.persona.get().nick);
+    Promise.resolve().then(function () { return P.checkPermissions(); }).then(function (r) {
+      if ((r.display === "prompt" || r.display === "prompt-with-rationale") && !asked && list.length) {
+        asked = true;   /* nur einmal pro Start nachfragen */
+        return P.requestPermissions();
+      }
+      return r;
+    }).then(function (r) {
+      perm = r.display === "prompt-with-rationale" ? "prompt" : r.display;
+      if (perm !== "granted") return null;
+      return Promise.resolve(P.createChannel ? P.createChannel({ id: CHANNEL, name: "Erinnerungen", description: "Erinnerungen an Training und Gewicht", importance: 4, visibility: 1, vibration: true }) : null)
+        .catch(function () { /* Kanal gibt es schon oder wird nicht unterstützt */ })
+        .then(function () { return P.getPending(); })
+        .then(function (p) {
+          var ids = (p.notifications || []).filter(function (x) { return x.id !== TEST_ID; }).map(function (x) { return { id: x.id }; });
+          return ids.length ? P.cancel({ notifications: ids }) : null;
+        })
+        .then(function () {
+          if (!list.length) return null;
+          return P.schedule({ notifications: list.map(function (x) {
+            return { id: x.id, title: x.title, body: x.body, channelId: CHANNEL, schedule: { at: x.at, allowWhileIdle: true } };
+          }) });
+        });
+    }).catch(function (e) {
+      App.diag.log("Benachrichtigungen: " + String(e && e.message ? e.message : e).slice(0, 120));
+    }).then(function () {
+      busy = false;
+      paintStatus();
+      if (again) { again = false; run(); }
+    });
+  }
+
+  function sync() {
+    if (!plugin()) return;
+    clearTimeout(timer);
+    timer = setTimeout(run, 700);
+  }
+
+  function allow() {
+    var P = plugin();
+    if (!P) return;
+    P.requestPermissions().then(function (r) { perm = r.display; paintStatus(); sync(); }, function () { /* abgebrochen */ });
+  }
+
+  function test() {
+    var P = plugin();
+    if (!P) return Promise.resolve(false);
+    var nick = App.persona.get().nick;
+    return P.requestPermissions().then(function (r) {
+      perm = r.display;
+      paintStatus();
+      if (r.display !== "granted") return false;
+      return Promise.resolve(P.createChannel ? P.createChannel({ id: CHANNEL, name: "Erinnerungen", importance: 4, visibility: 1 }) : null).catch(function () {}).then(function () {
+        return P.schedule({ notifications: [{ id: TEST_ID, title: "Test", body: render(cfg().train.text, nick), channelId: CHANNEL, schedule: { at: new Date(Date.now() + 5000), allowWhileIdle: true } }] });
+      }).then(function () { return true; });
+    }).catch(function () { return false; });
+  }
+
+  /* --- Einstellungen --- */
+  function block(key, heading, help) {
+    var c = cfg()[key], D = S.NOTIFY_DEFAULTS[key], base = "ntf-" + key;
+    var on = el("input", { type: "checkbox", id: base + "-on" });
+    on.checked = c.on;
+    var time = el("input", { type: "time", class: "in time", id: base + "-time", "aria-label": heading + ", Uhrzeit" });
+    time.value = c.time;
+    var text = el("input", { type: "text", class: "in", id: base + "-text", maxlength: "140", "aria-label": heading + ", Text" });
+    text.value = c.text;
+    var prev = el("p", { class: "hint ntf-prev", id: base + "-prev" });
+    function paintPrev() { prev.textContent = "Vorschau: " + render(cfg()[key].text, App.persona.get().nick); }
+    function paintOff() { time.disabled = text.disabled = !cfg()[key].on; }
+    on.addEventListener("change", function () { cfg()[key].on = on.checked; paintOff(); S.touch(); });
+    time.addEventListener("change", function () {
+      if (/^([01]\d|2[0-3]):[0-5]\d$/.test(time.value)) { cfg()[key].time = time.value; S.touch(); }
+      else time.value = cfg()[key].time;
+    });
+    text.addEventListener("input", function () {
+      var t = text.value.replace(/\s+/g, " ").trim().slice(0, 140);
+      if (t) { cfg()[key].text = t; S.touch(); paintPrev(); }
+    });
+    text.addEventListener("blur", function () { text.value = cfg()[key].text; });
+    var reset = el("button", { type: "button", class: "btn", id: base + "-reset", text: "Text zurücksetzen", onclick: function () {
+      cfg()[key].text = D.text; text.value = D.text; S.touch(); paintPrev();
+    } });
+    paintPrev(); paintOff();
+    return el("section", { class: "ntf-block" },
+      el("label", { class: "ntf-check", for: base + "-on" }, on, el("strong", { text: heading })),
+      el("p", { class: "hint", text: help }),
+      el("div", { class: "line" }, el("label", { class: "lab", for: base + "-time", text: "Uhrzeit" }), time),
+      el("div", { class: "line ntf-text" }, el("label", { class: "lab", for: base + "-text", text: "Text" }), text),
+      prev,
+      el("div", null, reset));
+  }
+
+  function card() {
+    statusNode = el("p", { class: "hint", id: "ntf-status", role: "status" });
+    var allowBtn = allowNode = el("button", { type: "button", class: "btn primary", id: "ntf-allow", text: "Benachrichtigungen erlauben", onclick: allow });
+    var testMsg = el("p", { class: "msg", role: "status", id: "ntf-test-msg" });
+    var native = !!plugin();
+    var kids = [
+      statusNode,
+      el("div", null, allowBtn),
+      block("train", "Training: nicht aufgeben", "Kommt an Trainingstagen zur Uhrzeit, wenn du noch keine 100 % erreicht hast. Pausentage zählen nicht."),
+      block("weight", "Sonntag: Gewicht eintragen", "Kommt sonntags zur Uhrzeit, wenn für den Tag noch kein Gewicht eingetragen ist."),
+      el("p", { class: "hint", text: "{name} wird durch deinen Spitznamen ersetzt, den du unter Persönliche Angaben einträgst. Ohne Spitznamen entfällt er." })
+    ];
+    if (native) {
+      kids.push(el("div", null, el("button", { type: "button", class: "btn", id: "ntf-test", text: "Test in 5 Sekunden", onclick: function () {
+        testMsg.classList.remove("err");
+        testMsg.textContent = "";
+        test().then(function (ok) {
+          testMsg.classList.toggle("err", !ok);
+          testMsg.textContent = ok ? "Die Test-Meldung kommt in 5 Sekunden. Lege die App ruhig in den Hintergrund." : "Das hat nicht geklappt. Prüfe, ob Benachrichtigungen erlaubt sind.";
+        });
+      } })), testMsg);
+    }
+    kids.push(el("p", { class: "hint", text: "Kommen die Meldungen verspätet oder gar nicht, schränkt dein Handy die App im Hintergrund ein. Erlaube der App dann in den Handy-Einstellungen unter Akku, im Hintergrund zu laufen (bei Huawei und Xiaomi „Autostart“ und „Keine Einschränkung“). Die Meldungen sind für die nächsten 14 Tage geplant und werden bei jedem Öffnen und jeder Änderung neu berechnet." }));
+    var node = App.fold("ntf", "Benachrichtigungen", "notify", kids);
+    paintStatus();
+    return node;
+  }
+
+  /* Neu berechnen bei Änderungen, beim Öffnen und beim Zurückkehren in die App */
+  S.onChange(sync);
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) sync(); });
+  document.addEventListener("DOMContentLoaded", function () { setTimeout(sync, 1500); });
+
+  App.notify = { plan: plan, render: render, card: card, sync: sync, run: run, test: test, permission: function () { return perm; } };
+})();
+
+</script>
+<script>
 /* Vergleich: mehrere Wochen oder Monate auswählen und als Diagramm nebeneinander sehen.
    Gesamtleistung als Balken, dazu je Übung ein kleines Diagramm und eine Tabelle mit den Werten.
    App.compare.view(build) liefert die Ansicht. build("weeks" | "months") gibt die Zeilen wie in views/berichte.js zurück
@@ -3112,6 +3476,7 @@ html.kb-open #view { padding-bottom: 60vh; }
       if (it.p !== null) {
         var b = el("div", { class: "b" }, el("span", { class: "v", text: String(it.p) }));
         b.style.height = (it.p / max * 100) + "%";
+        C.tint(b, it.p);
         col.append(b);
       }
       plot.append(col);
@@ -3186,9 +3551,7 @@ html.kb-open #view { padding-bottom: 60vh; }
       var main = bars(items, scale(items.map(function (i) { return i.p; })), false);
       var overall = App.fold("cvo", "Gesamtleistung", "cmp-overall", [
         el("p", { class: "hint", text: "Leistung in Prozent vom Ziel, ältester Zeitraum links." }),
-        el("div", { class: "legend" },
-          el("span", null, el("i"), "unter dem Ziel"), el("span", null, el("i", { class: "g" }), "Ziel erreicht"),
-          el("span", null, el("i", { class: "o" }), "über dem Ziel"), el("span", null, el("i", { class: "d" }), "100 %")),
+        el.apply(null, ["div", { class: "legend" }].concat(C.legendItems(), [el("span", null, el("i", { class: "d" }), "Ziel (100 %)")])),
         main[0], main[1],
         el("p", { class: "sum", id: "cmp-sum", text: "Ø " + C.pct(avg) + " % · Bestwert " + best.p + " % (" + best.title + ") · Verlauf von " + chosen[0].title + " zu " + chosen[chosen.length - 1].title + ": " + trend })
       ], true);
@@ -3360,6 +3723,7 @@ html.kb-open #view { padding-bottom: 60vh; }
         grid.append(el("button", { type: "button", class: "cal-c " + x.state + (key === tk ? " today" : "") + (key === selDate ? " sel" : ""), role: "gridcell", "data-d": key, "data-s": x.state, "aria-label": label, "aria-pressed": String(key === selDate),
           onclick: (function (k) { return function () { selDate = selDate === k ? null : k; paint(); }; })(key) },
           el("b", { text: String(d) }), el("small", { text: mark })));
+        if (x.state === "ok" || x.state === "part") C.tint(grid.lastChild, x.pct);
       }
       var trained = cnt.ok + cnt.part + cnt.miss;
       sum.textContent = (trained
@@ -4061,37 +4425,58 @@ html.kb-open #view { padding-bottom: 60vh; }
 
   function perf(v) { return v === null ? "–" : C.pct(v) + " %"; }
 
+  function band(p) { return C.band(p); }
+  var NS = "http://www.w3.org/2000/svg", gid = 0, CIRC = 2 * Math.PI * 42;
+  function svg(tag, attrs) { var n = document.createElementNS(NS, tag); for (var k in attrs) n.setAttribute(k, attrs[k]); return n; }
+
+  /* Ring-Kachel: Beschriftung, Aktivitätsring mit Verlauf, Prozent in der Mitte. Tippen öffnet die Details. */
   function Meter(label) {
-    var lab = el("p", { class: "m-label", text: label || "" });
-    var val = el("div", { class: "m-val" });
-    var fill = el("i");
-    var bar = el("div", { class: "bar", role: "img" }, fill);
-    var stats = el("dl", { class: "stats" });
-    var box = el("div", { class: "card" }, lab, val, bar, stats);
+    var id = "rg" + (++gid), o = null;
+    var lab = el("span", { class: "m-label", text: label || "" });
+    var val = el("span", { class: "m-val" });
+    var sv = svg("svg", { viewBox: "0 0 100 100", class: "ring", "aria-hidden": "true", focusable: "false" });
+    var defs = svg("defs", {}), grad = svg("linearGradient", { id: id, x1: "0", y1: "0", x2: "1", y2: "1" });
+    var s0 = svg("stop", { offset: "0" }), s1 = svg("stop", { offset: "1" });
+    grad.append(s0, s1); defs.append(grad);
+    var prog = svg("circle", { class: "ring-p", cx: "50", cy: "50", r: "42", fill: "none", "stroke-width": "10", "stroke-linecap": "round", stroke: "url(#" + id + ")", transform: "rotate(-90 50 50)", "stroke-dasharray": CIRC.toFixed(2), "stroke-dashoffset": CIRC.toFixed(2) });
+    sv.append(defs, svg("circle", { class: "ring-t", cx: "50", cy: "50", r: "42", fill: "none", "stroke-width": "10" }), prog);
+    var mid = el("span", { class: "ring-mid" }, val);
+    var box = el("button", { type: "button", class: "card ring-tile", "aria-haspopup": "dialog", onclick: openDetail }, lab, el("span", { class: "ring-wrap" }, sv, mid));
+
+    function openDetail() {
+      if (!o) return;
+      var head = el("div", { class: "dt-head" });
+      if (o.rest) head.append(el("span", { class: "dt-rest", text: o.restText || "Ruhetag" }));
+      else {
+        head.append(el("span", { class: "dt-big" }, String(o.p), el("small", { text: "%" })));
+        if (o.p > 100) head.append(el("span", { class: "over-chip", text: "+" + (o.p - 100) + " % über Ziel" }));
+      }
+      var stats = el("dl", { class: "stats dt-stats" });
+      o.rows.forEach(function (r) { stats.append(el("div", null, el("dt", { text: r[0] }), el("dd", { text: r[1] }))); });
+      App.dialog.info({ title: o.title, body: el("div", { class: "dt-body" }, head, stats) });
+    }
+
     return {
       box: box,
-      set: function (o) {
-        if (o.label) lab.textContent = o.label;
+      set: function (n) {
+        o = n;
+        if (n.label) lab.textContent = n.label;
         val.replaceChildren();
-        val.classList.toggle("rest", !!o.rest);
+        val.classList.toggle("rest", !!n.rest);
         box.classList.remove("is-full", "is-over");
-        if (o.rest) {
-          val.append(o.restText || "Ruhetag");
-          fill.style.width = "0%";
-          bar.style.visibility = "hidden";
+        var p = n.rest ? 0 : n.p, c = band(p);
+        s0.setAttribute("stop-color", c[1]); s1.setAttribute("stop-color", c[2]);
+        prog.style.opacity = n.rest || p <= 0 ? "0" : "1";
+        prog.setAttribute("stroke-dashoffset", (CIRC * (1 - Math.min(100, p) / 100)).toFixed(2));
+        if (n.rest) {
+          val.append(n.restText || "Ruhetag");
+          box.setAttribute("aria-label", n.title + ": " + (n.restText || "Ruhetag") + ". Details öffnen");
         } else {
-          bar.style.visibility = "";
-          val.append(String(o.p), el("small", { text: "%" }));
-          if (o.p > 100) val.append(el("span", { class: "over-chip", text: "+" + (o.p - 100) + " % über Ziel" }));
-          fill.style.width = Math.min(100, o.p) + "%";
-          if (o.p === 100) box.classList.add("is-full");
-          if (o.p > 100) box.classList.add("is-over");
-          bar.setAttribute("aria-label", lab.textContent + " " + o.p + " Prozent");
+          val.append(String(p), el("small", { text: "%" }));
+          if (p === 100) box.classList.add("is-full");
+          if (p > 100) box.classList.add("is-over");
+          box.setAttribute("aria-label", n.title + ": " + p + " Prozent. Details öffnen");
         }
-        stats.replaceChildren();
-        o.rows.forEach(function (r) {
-          stats.append(el("div", null, el("dt", { text: r[0] }), el("dd", { text: r[1] })));
-        });
       }
     };
   }
@@ -4112,7 +4497,7 @@ html.kb-open #view { padding-bottom: 60vh; }
       var today = App.todayIdx();
       if (sel === null || selToday !== today) { sel = today; selToday = today; }
 
-      var mDay = Meter(), mWeek = Meter("Wochenziel");
+      var mDay = Meter(), mWeek = Meter("Woche");
       var strip = el("nav", { class: "strip", "aria-label": "Wochentage" });
       var panel = el("section", { class: "card", "aria-live": "polite" });
       var cells = [];
@@ -4168,26 +4553,33 @@ html.kb-open #view { padding-bottom: 60vh; }
       function paintMeters() {
         var st = S.state();
         var items = C.dayItems(st, sel);
-        var label = "Tagesziel · " + (sel === today ? "heute" : App.DAYS[sel].n);
+        var label = sel === today ? "Tag" : "Tag · " + App.DAYS[sel].s;
+        var title = "Tagesziel · " + (sel === today ? "heute" : App.DAYS[sel].n);
+        var H = App.health, kg = H.currentKg();
+        function kcalRow(days) {
+          var own = st.exercises.some(function (e) { return e.kcal > 0 || e.met > 0 || e.sec > 0; });
+          return kg > 0 || own ? [["Kalorien (geschätzt)", H.fmtKcal(H.kcalDays(days, kg))]] : [];
+        }
         if (!items) {
-          mDay.set({ label: label, rest: true, restText: st.days[sel] ? "Pause" : "Ruhetag", rows: [] });
+          mDay.set({ label: label, title: title, rest: true, restText: st.days[sel] ? "Pause" : "Ruhetag", rows: [] });
         } else {
           var a = C.aggregate([items]);
           mDay.set({
-            label: label, p: C.pct(a.perfAll),
+            label: label, title: title, p: C.pct(a.perfAll),
             rows: a.slots
-              ? [["Übungen erreicht", a.reached + " von " + a.slots], ["Leistung der gemachten Übungen", perf(a.perfStarted)]]
+              ? [["Übungen erreicht", a.reached + " von " + a.slots], ["Leistung der gemachten Übungen", perf(a.perfStarted)]].concat(kcalRow([items]))
               : [["Noch keine Übungen angelegt", "–"]]
           });
         }
         var w = C.aggregate(C.allDays(st));
         mWeek.set({
+          title: "Wochenziel",
           p: C.pct(w.perfAll),
           rows: [
             ["Übungen erreicht", w.reached + " von " + w.slots],
             ["Trainingstage komplett", w.fullDays + " von " + w.trainDays],
             ["Leistung der gemachten Übungen", perf(w.perfStarted)]
-          ]
+          ].concat(kcalRow(C.allDays(st)))
         });
       }
 
@@ -4200,6 +4592,7 @@ html.kb-open #view { padding-bottom: 60vh; }
           c.btn.classList.toggle("full", p === 100);
           c.btn.classList.toggle("over", p !== null && p > 100);
           c.fill.style.width = p === null ? "0%" : Math.min(100, p) + "%";
+          C.tint(c.fill, p);
           var pz = !!st.days[i] && App.pause.is(App.pause.dateOfDay(i));
           c.dp.textContent = p === null ? (pz ? "Pause" : "Ruhe") : p + "%";
           c.btn.setAttribute("aria-pressed", String(i === sel));
@@ -4215,7 +4608,9 @@ html.kb-open #view { padding-bottom: 60vh; }
         r.chk.checked = full;
         r.goal.replaceChildren("Ziel: " + e.target + " " + e.unit);
         if (v > e.target) r.goal.append(" · ", el("b", { text: "+" + Math.round((v / e.target - 1) * 100) + " % über Ziel" }));
-        r.fill.style.width = Math.min(100, Math.round(v / e.target * 100)) + "%";
+        var rp = C.pct(v / e.target);
+        r.fill.style.width = Math.min(100, rp) + "%";
+        C.tint(r.fill, v > 0 ? rp : null);
       }
 
       function paintAll() {
@@ -4815,6 +5210,7 @@ html.kb-open #view { padding-bottom: 60vh; }
       var p = a && a.slots ? C.pct(a.perfAll) : null;
       var fill = el("i");
       fill.style.width = p === null ? "0%" : Math.min(100, p) + "%";
+      C.tint(fill, p);
       strip.append(el("div", { class: "day" + (items ? "" : " rest") + (p === 100 ? " full" : "") + (p !== null && p > 100 ? " over" : "") },
         el("span", { class: "dn", text: App.DAYS[i].s }),
         el("span", { class: "pb" }, fill),
@@ -4851,6 +5247,7 @@ html.kb-open #view { padding-bottom: 60vh; }
     var state = p > 100 ? "over" : p === 100 ? "full" : "";
     var fill = el("i");
     fill.style.width = Math.min(100, p) + "%";
+    C.tint(fill, p);
     var title = el("span", { class: "rep-t", text: r.title });
     if (r.live) title.append(" ", el("span", { class: "pill", text: "läuft" }));
     var body = el("div", { class: "rep-body" },
@@ -4891,6 +5288,7 @@ html.kb-open #view { padding-bottom: 60vh; }
       var p = vals[i];
       var bar = el("div", { class: "b" }, el("span", { class: "v", text: String(p) }));
       bar.style.height = (p / max * 100) + "%";
+      C.tint(bar, p);
       plot.append(el("div", {
         class: "col" + (r.live ? " live" : "") + (p === 100 ? " full" : "") + (p > 100 ? " over" : ""),
         role: "img", title: r.title + ": " + p + " %", "aria-label": r.title + ": " + p + " Prozent" + (r.live ? ", läuft noch" : "")
@@ -4905,12 +5303,7 @@ html.kb-open #view { padding-bottom: 60vh; }
 
     return App.fold("rvl", "Verlauf", "rep-verlauf", [
       el("p", { class: "hint", text: "Leistung in Prozent vom Ziel, " + (mode === "weeks" ? "pro Kalenderwoche" : "pro Monat") + "." }),
-      el("div", { class: "legend" },
-        el("span", null, el("i"), "unter dem Ziel"),
-        el("span", null, el("i", { class: "g" }), "Ziel erreicht"),
-        el("span", null, el("i", { class: "o" }), "über dem Ziel"),
-        el("span", null, el("i", { class: "d" }), "100 %")
-      ),
+      el.apply(null, ["div", { class: "legend" }].concat(C.legendItems(), [el("span", null, el("i", { class: "d" }), "Ziel (100 %)")])),
       plot, xl,
       el("p", { class: "sum", text: unit + " · Ø " + C.pct(avg) + " % · Bestwert " + (best ? C.pct(best.agg.perfAll) + " % (" + best.title + ")" : "–") })
     ]);
@@ -5321,7 +5714,7 @@ html.kb-open #view { padding-bottom: 60vh; }
         }
       });
       var inf = info();
-      root.append(persoenlich(), darstellung(), daten(imp), sicherheit(), speicher(), inf);
+      root.append(persoenlich(), darstellung(), App.notify.card(), daten(imp), sicherheit(), speicher(), inf);
       if (flash) {
         var target = { imp: "#bak-msg", set: "#set-msg", undo: "#undo-msg", info: "#info-msg" }[flash.to];
         var node = root.querySelector(target);
