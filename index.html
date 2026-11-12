@@ -723,10 +723,16 @@ html.sw-nav .tabs { touch-action: none; }
     });
   }
 
+  /* Scrollposition je Reiter, nur im Arbeitsspeicher: beim Wechsel zurück landet man wieder an derselben Stelle, nach einem App-Neustart ist sie weg */
+  var scrollPos = {}, shownId = null;
+  function scrollY() { return window.pageYOffset || document.documentElement.scrollTop || 0; }
+
   function route(keep) {
     var id = (location.hash || "").replace("#", "");
     var v = byId[id] || views[0];
     if (!v) return;
+    if (!keep && shownId && shownId !== v.id) scrollPos[shownId] = scrollY();
+    shownId = v.id;
     document.querySelectorAll(".tab").forEach(function (a) {
       if (a.getAttribute("data-id") === v.id) a.setAttribute("aria-current", "page");
       else a.removeAttribute("aria-current");
@@ -736,10 +742,15 @@ html.sw-nav .tabs { touch-action: none; }
     var root = document.getElementById("view");
     root.replaceChildren();
     v.render(root);
-    if (!keep) window.scrollTo(0, 0);
+    if (!keep) {
+      var y = scrollPos[v.id] || 0;
+      window.scrollTo(0, y);
+      if (y) requestAnimationFrame(function () { if (shownId === v.id) window.scrollTo(0, y); }); /* falls sich die Seitenhöhe erst nach dem Aufbau setzt */
+    }
   }
 
   function start() {
+    try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch (e) {} /* Neustart beginnt immer oben, gemerkt wird nur innerhalb der offenen App */
     buildTabs();
     window.addEventListener("hashchange", function () { route(false); });
     route(false);
@@ -757,9 +768,12 @@ html.sw-nav .tabs { touch-action: none; }
 (function () {
   "use strict";
 
-  App.version = "1.34.0";
+  App.version = "1.35.0";
 
   App.changelog = [
+    { v: "1.35.0", date: "2026-11-12", items: [
+      "Die App merkt sich beim Reiterwechsel, wie weit du in jedem Reiter gescrollt hast, und springt beim Zurückkehren an dieselbe Stelle. Nach dem Schließen der App beginnt wieder alles oben."
+    ] },
     { v: "1.34.0", date: "2026-11-12", items: [
       "Neu in Einstellungen > Darstellung (beide standardmäßig aus): „Navigation swipen“ (Finger über die untere Reiterleiste ziehen, der Reiter unter dem Finger wird beim Loslassen geöffnet) und „Seiten swipen“ (im Inhalt nach links wischen = nächster Reiter, nach rechts = vorheriger)."
     ] },
