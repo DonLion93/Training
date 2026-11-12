@@ -453,10 +453,8 @@ button.day { position: relative; user-select: none; -webkit-user-select: none; -
 .pf-in .in.num { text-align: left; width: 100%; }
 .pf-unit { color: var(--muted); font-size: 14px; }
 .pf-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.pf-gender { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; }
-.pf-gender legend { padding: 0; margin-bottom: 6px; float: left; width: 100%; }
-.pf-check { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; cursor: pointer; }
-.pf-check input { width: 20px; height: 20px; accent-color: var(--accent); }
+.pf-gender { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0; }
+.pf-gender legend { padding: 0; margin-bottom: 2px; }
 
 /* Gesundheitswerte */
 .hv-two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -550,8 +548,6 @@ html.kb-open #view { padding-bottom: 60vh; }
 .ntf-text .in { flex: 1 1 200px; min-width: 0; }
 .in.time { width: auto; min-width: 120px; }
 .ntf-block input:disabled { opacity: .5; }
-.ntf-check { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; cursor: pointer; }
-.ntf-check input { width: 20px; height: 20px; accent-color: var(--accent); }
 
 /* Detailfenster: kleine Ringe */
 .dt-mini { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 12px 8px; }
@@ -612,6 +608,13 @@ html.sw-nav .tabs { touch-action: none; }
 @keyframes sw-in-l { from { opacity: .3; transform: translateX(28px); } to { opacity: 1; transform: none; } }
 @keyframes sw-in-r { from { opacity: .3; transform: translateX(-28px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { #view.sw-in-l, #view.sw-in-r { animation: none; } }
+
+/* Abzeichen: erstes Drittel Bronze, mittleres Silber, letztes Gold */
+.bd.m-b { --m0: #e6a56b; --m1: #b9692d; --m2: #7a4118; --mi: #2e1708; }
+.bd.m-s { --m0: #f1f4f8; --m1: #b4bdca; --m2: #7d8898; --mi: #1c2430; }
+.bd.m-g { --m0: #ffe27a; --m1: #f0b922; --m2: #b98300; --mi: #3d2a00; }
+.bd.m-b .bd-ring, .bd.m-s .bd-ring, .bd.m-g .bd-ring { border-color: color-mix(in srgb, var(--m1) 60%, var(--line)); }
+.bd.got.m-b .bd-ring, .bd.got.m-s .bd-ring, .bd.got.m-g .bd-ring { border: 2px solid var(--m2); background: radial-gradient(circle at 32% 28%, var(--m0), var(--m1) 58%, var(--m2)); color: var(--mi); box-shadow: inset 0 1px 1px rgba(255, 255, 255, .55), 0 1px 3px rgba(0, 0, 0, .3); }
 
 </style>
 </head>
@@ -768,9 +771,13 @@ html.sw-nav .tabs { touch-action: none; }
 (function () {
   "use strict";
 
-  App.version = "1.35.0";
+  App.version = "1.36.0";
 
   App.changelog = [
+    { v: "1.36.0", date: "2026-11-12", items: [
+      "Abzeichen: Die ersten zwei Stufen jeder Reihe sind jetzt Bronze, die mittleren zwei Silber, die letzten zwei Gold.",
+      "Einstellungen: Alle Kästchen zum Ein- und Ausschalten sind jetzt Schalter (Persönliche Angaben, Benachrichtigungen, Wiegen-Erinnerung)."
+    ] },
     { v: "1.35.0", date: "2026-11-12", items: [
       "Die App merkt sich beim Reiterwechsel, wie weit du in jedem Reiter gescrollt hast, und springt beim Zurückkehren an dieselbe Stelle. Nach dem Schließen der App beginnt wieder alles oben."
     ] },
@@ -2217,10 +2224,10 @@ html.sw-nav .tabs { touch-action: none; }
 
   /* Schalter für Einstellungen > Persönliche Angaben */
   function settingsNode() {
-    var c = el("input", { type: "checkbox", id: "pf-wr" });
+    var c = el("input", { type: "checkbox", class: "tgl-in", role: "switch", id: "pf-wr" });
     c.checked = isOn();
     c.addEventListener("change", function () { setOn(c.checked); });
-    return el("label", { class: "pf-check", for: "pf-wr" }, c, el("span", { text: "Sonntags ans Wiegen erinnern" }));
+    return el("label", { class: "tgl", for: "pf-wr" }, el("span", { text: "Sonntags ans Wiegen erinnern" }), c);
   }
 
   /* Die App braucht einen Moment, bis auch Daten aus dem Konto da sind, erst dann prüfen */
@@ -3473,7 +3480,7 @@ html.sw-nav .tabs { touch-action: none; }
   /* --- Einstellungen --- */
   function block(key, heading, help) {
     var c = cfg()[key], D = S.NOTIFY_DEFAULTS[key], base = "ntf-" + key;
-    var on = el("input", { type: "checkbox", id: base + "-on" });
+    var on = el("input", { type: "checkbox", class: "tgl-in", role: "switch", id: base + "-on" });
     on.checked = c.on;
     var time = el("input", { type: "time", class: "in time", id: base + "-time", "aria-label": heading + ", Uhrzeit" });
     time.value = c.time;
@@ -3497,7 +3504,7 @@ html.sw-nav .tabs { touch-action: none; }
     } });
     paintPrev(); paintOff();
     return el("section", { class: "ntf-block" },
-      el("label", { class: "ntf-check", for: base + "-on" }, on, el("strong", { text: heading })),
+      el("label", { class: "tgl", for: base + "-on" }, el("strong", { text: heading }), on),
       el("p", { class: "hint", text: help }),
       el("div", { class: "line" }, el("label", { class: "lab", for: base + "-time", text: "Uhrzeit" }), time),
       el("div", { class: "line ntf-text" }, el("label", { class: "lab", for: base + "-text", text: "Text" }), text),
@@ -4079,10 +4086,11 @@ html.sw-nav .tabs { touch-action: none; }
     var ul = el("ul", { class: "bd-row" });
     tiers.forEach(function (t, i) {
       var got = value >= t;
-      ul.append(el("li", { class: "bd" + (got ? " got" : "") },
+      var metal = ["b", "s", "g"][Math.min(2, Math.floor(i * 3 / tiers.length))]; /* erstes Drittel Bronze, mittleres Silber, letztes Gold */
+      ul.append(el("li", { class: "bd m-" + metal + (got ? " got" : "") },
         el("span", { class: "bd-ring", "aria-hidden": "true", text: got ? "✓" : String(i + 1) }),
         el("span", { class: "bd-l", text: fmt(t) }),
-        el("span", { class: "sr", text: got ? "erreicht" : "noch nicht erreicht" })));
+        el("span", { class: "sr", text: (metal === "b" ? "Bronze, " : metal === "s" ? "Silber, " : "Gold, ") + (got ? "erreicht" : "noch nicht erreicht") })));
     });
     return ul;
   }
@@ -5849,14 +5857,14 @@ html.sw-nav .tabs { touch-action: none; }
     /* Zwei Kästchen, es kann höchstens eines angekreuzt sein */
     var boxes = {};
     function box(key, label) {
-      var c = el("input", { type: "checkbox", id: "pf-g-" + key });
+      var c = el("input", { type: "checkbox", class: "tgl-in", role: "switch", id: "pf-g-" + key });
       c.checked = cur.gender === key;
       c.addEventListener("change", function () {
         P.set({ gender: c.checked ? key : null });
         Object.keys(boxes).forEach(function (k) { boxes[k].checked = P.get().gender === k; });
       });
       boxes[key] = c;
-      return el("label", { class: "pf-check", for: "pf-g-" + key }, c, el("span", { text: label }));
+      return el("label", { class: "tgl", for: "pf-g-" + key }, el("span", { text: label }), c);
     }
     var gender = el("fieldset", { class: "pf-gender" }, el("legend", { text: "Geschlecht" }), box("m", "männlich"), box("w", "weiblich"));
 
