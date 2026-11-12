@@ -32,7 +32,7 @@ body { margin: 0; }
   --accent-ink: #ffffff;
   --good: #1e8e5a;
   --good-ink: #ffffff;
-  --over: #a85d00;
+  --over: #7c3aed;
   --danger: #b3261e;
   --danger-ink: #ffffff;
   --accent-soft: color-mix(in srgb, var(--accent) 14%, var(--surface));
@@ -43,19 +43,19 @@ body { margin: 0; }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0e151b; --surface: #16202a; --ink: #e8eef3; --muted: #93a3b3; --line: #26333f; --track: #243240;
-    --accent: #4da3ff; --accent-ink: #06121f; --good: #43c28a; --good-ink: #06121f; --over: #f0b429; --danger: #ff8a80; --danger-ink: #3a0b08;
+    --accent: #4da3ff; --accent-ink: #06121f; --good: #43c28a; --good-ink: #06121f; --over: #b794f6; --danger: #ff8a80; --danger-ink: #3a0b08;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0e151b; --surface: #16202a; --ink: #e8eef3; --muted: #93a3b3; --line: #26333f; --track: #243240;
-  --accent: #4da3ff; --accent-ink: #06121f; --good: #43c28a; --good-ink: #06121f; --over: #f0b429; --danger: #ff8a80; --danger-ink: #3a0b08;
+  --accent: #4da3ff; --accent-ink: #06121f; --good: #43c28a; --good-ink: #06121f; --over: #b794f6; --danger: #ff8a80; --danger-ink: #3a0b08;
   color-scheme: dark;
 }
 /* Schwarz: echtes Schwarz als Grund, Karten nur minimal abgesetzt. Steht nach den Dunkel-Blöcken, damit es sie überschreibt. */
 :root[data-theme="black"] {
   --bg: #000000; --surface: #0a0a0a; --ink: #f2f2f2; --muted: #8c959e; --line: #1d1d1d; --track: #1a1a1a;
-  --accent: #4da3ff; --accent-ink: #06121f; --good: #43c28a; --good-ink: #06121f; --over: #f0b429; --danger: #ff8a80; --danger-ink: #3a0b08;
+  --accent: #4da3ff; --accent-ink: #06121f; --good: #43c28a; --good-ink: #06121f; --over: #b794f6; --danger: #ff8a80; --danger-ink: #3a0b08;
   color-scheme: dark;
 }
 body {
@@ -553,6 +553,66 @@ html.kb-open #view { padding-bottom: 60vh; }
 .ntf-check { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; cursor: pointer; }
 .ntf-check input { width: 20px; height: 20px; accent-color: var(--accent); }
 
+/* Detailfenster: kleine Ringe */
+.dt-mini { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 12px 8px; }
+.mini { display: grid; justify-items: center; gap: 3px; text-align: center; min-width: 0; }
+.mini-wrap { position: relative; width: 52px; height: 52px; }
+.mini-ring { display: block; width: 100%; height: 100%; }
+.mini-ring .dashed { stroke-dasharray: 3 4; }
+.mini-val { position: absolute; inset: 0; display: grid; place-items: center; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.mini-name { font-size: 13px; font-weight: 600; overflow-wrap: anywhere; line-height: 1.2; }
+.mini-sub { font-size: 12px; color: var(--muted); overflow-wrap: anywhere; line-height: 1.2; }
+.mini.over .mini-val { color: var(--over); }
+/* Glückwunsch-Moment */
+.ring-tile { position: relative; }
+.ring-wrap .fx { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
+.fx-p { position: absolute; left: 50%; top: 50%; width: var(--sz, 7px); height: var(--sz, 7px); margin: calc(var(--sz, 7px) / -2) 0 0 calc(var(--sz, 7px) / -2); border-radius: 50%; opacity: 0; animation: fx-fly 1.1s cubic-bezier(.2,.7,.3,1) var(--dl, 0ms) forwards; }
+.fx-p.star { border-radius: 0; width: calc(var(--sz, 7px) * 1.7); height: calc(var(--sz, 7px) * 1.7); margin: calc(var(--sz, 7px) * -0.85) 0 0 calc(var(--sz, 7px) * -0.85); clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); }
+@keyframes fx-fly { 0% { transform: translate(0, 0) scale(.3) rotate(0); opacity: 1; } 65% { opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)) scale(1) rotate(var(--rot)); opacity: 0; } }
+.fx-full .ring-wrap { animation: fx-pulse .7s ease-out; --fx: #1f9d55; }
+.fx-over .ring-wrap { animation: fx-pulse-over 1.1s ease-out; --fx: #7c3aed; }
+.fx-full .ring, .fx-over .ring { filter: drop-shadow(0 0 8px var(--fx)); }
+.fx-over .ring { animation: fx-spin 1s ease-in-out; }
+@keyframes fx-pulse { 0% { transform: scale(1); } 35% { transform: scale(1.08); } 100% { transform: scale(1); } }
+@keyframes fx-pulse-over { 0% { transform: scale(1); } 30% { transform: scale(1.12); } 55% { transform: scale(0.98); } 100% { transform: scale(1); } }
+@keyframes fx-spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .fx-full .ring-wrap, .fx-over .ring-wrap, .fx-over .ring { animation: none; }
+}
+.ring-tile.fx-full, .ring-tile.fx-over { z-index: 2; }
+
+/* Option: Kacheln oben anheften */
+.meters.stick { position: sticky; top: 0; z-index: 6; background: var(--bg); padding-bottom: 8px; }
+.meters.stick.compact { box-shadow: 0 8px 8px -8px rgba(0, 0, 0, .35); }
+.meters.compact .ring-tile { display: flex; flex-direction: row-reverse; align-items: center; justify-content: center; gap: 10px; padding: 6px 10px; }
+.meters.compact .ring-wrap { width: 44px; flex: none; }
+.meters.compact .m-val { font-size: 13px; }
+.meters.compact .m-val small { display: none; }
+.meters.compact .m-val.rest { font-size: 9px; }
+/* Option: erledigte Übungen nach unten */
+.xsep { list-style: none; padding: 10px 0 2px; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); border: 0; }
+.xrow.settle { animation: x-settle .45s ease-out; }
+@keyframes x-settle { from { opacity: .25; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .xrow.settle { animation: none; } }
+/* Schalter in den Einstellungen: grau aus, Akzentfarbe an */
+.tgl { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; cursor: pointer; font-size: 16px; }
+.tgl-in { -webkit-appearance: none; appearance: none; flex: none; position: relative; width: 48px; height: 28px; margin: 0; border-radius: 14px; cursor: pointer; background: color-mix(in srgb, var(--muted) 45%, var(--surface)); transition: background .2s; }
+.tgl-in::after { content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .35); transition: transform .2s; }
+.tgl-in:checked { background: var(--accent); }
+.tgl-in:checked::after { transform: translateX(20px); }
+.tgl-in:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .tgl-in, .tgl-in::after { transition: none; } }
+
+/* Wischen zwischen den Reitern */
+html.sw-nav .tabs { touch-action: none; }
+.tab.swipe-hot { color: var(--ink); }
+.tab.swipe-hot .ic { background: var(--accent-soft); color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+#view.sw-in-l { animation: sw-in-l .25s ease-out; }
+#view.sw-in-r { animation: sw-in-r .25s ease-out; }
+@keyframes sw-in-l { from { opacity: .3; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+@keyframes sw-in-r { from { opacity: .3; transform: translateX(-28px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { #view.sw-in-l, #view.sw-in-r { animation: none; } }
+
 </style>
 </head>
 <body>
@@ -697,9 +757,22 @@ html.kb-open #view { padding-bottom: 60vh; }
 (function () {
   "use strict";
 
-  App.version = "1.30.0";
+  App.version = "1.34.0";
 
   App.changelog = [
+    { v: "1.34.0", date: "2026-11-12", items: [
+      "Neu in Einstellungen > Darstellung (beide standardmäßig aus): „Navigation swipen“ (Finger über die untere Reiterleiste ziehen, der Reiter unter dem Finger wird beim Loslassen geöffnet) und „Seiten swipen“ (im Inhalt nach links wischen = nächster Reiter, nach rechts = vorheriger)."
+    ] },
+    { v: "1.33.0", date: "2026-11-12", items: [
+      "Neu in Einstellungen > Darstellung (beide standardmäßig aus): „Kacheln oben anheften“ lässt Tag und Woche beim Scrollen klein oben stehen. „Erledigte Übungen nach unten“ sortiert Geschafftes ans Ende der Liste."
+    ] },
+    { v: "1.32.0", date: "2026-11-12", items: [
+      "Neu: Im Detailfenster von Tag und Woche stehen die Übungen beziehungsweise die Wochentage jetzt als kleine Ringe in den gleichen Farben.",
+      "Neu: Glückwunsch-Moment. Erreichst du 100 %, pulsiert der Ring kurz mit grünen Funken. Gehst du über 100 %, gibt es eine violette Variante mit Glanz. Bei reduzierten Animationen im Handy bleibt es ruhig."
+    ] },
+    { v: "1.31.0", date: "2026-11-11", items: [
+      "Berichte: „Auf einen Blick“ ist jetzt aufklappbar und beim Start zugeklappt."
+    ] },
     { v: "1.30.0", date: "2026-11-11", items: [
       "Neu: Das Farbschema der Ringe gilt jetzt für alle Prozentanzeigen: Balken der Übungen, Tagesleiste im Trainingsplan und in den Berichten, Berichtsbalken, Diagramme im Verlauf und Vergleich sowie die Tage im Trainingskalender. Bis 20 % rot, bis 50 % orange, bis 90 % gelb, bis 99 % hellgrün, 100 % grün, darüber violett, jeweils mit Verlauf.",
       "Die Legende der Diagramme zeigt jetzt diese Farbstufen."
@@ -1107,7 +1180,7 @@ html.kb-open #view { padding-bottom: 60vh; }
       notes: {},
       reports: [],
       weights: [],
-      settings: { theme: "system", accent: null, profile: { gender: null, height: null, weight: null, target: null, nick: "" }, notify: cleanNotify(null) },
+      settings: { theme: "system", accent: null, profile: { gender: null, height: null, weight: null, target: null, nick: "" }, notify: cleanNotify(null), view: cleanView(null) },
       updatedAt: 0
     };
   }
@@ -1243,8 +1316,15 @@ html.kb-open #view { padding-bottom: 60vh; }
       theme: ["light", "dark", "black"].indexOf(s.theme) >= 0 ? s.theme : "system",
       accent: typeof s.accent === "string" && /^#[0-9a-fA-F]{6}$/.test(s.accent) ? s.accent.toLowerCase() : null,
       profile: cleanProfile(s.profile),
-      notify: cleanNotify(s.notify)
+      notify: cleanNotify(s.notify),
+      view: cleanView(s.view)
     };
+  }
+
+  /* Ansichtsoptionen, alle aus: sticky = Kacheln oben anheften, hideDone = erledigte Übungen nach unten, swipeNav = Wischen über die Reiterleiste, swipePage = Wischen im Inhalt */
+  function cleanView(raw) {
+    raw = raw && typeof raw === "object" ? raw : {};
+    return { sticky: raw.sticky === true, hideDone: raw.hideDone === true, swipeNav: raw.swipeNav === true, swipePage: raw.swipePage === true };
   }
 
   /* Erinnerungen (Benachrichtigungen der Android-App): je Art an/aus, Uhrzeit HH:MM und Text mit dem Platzhalter {name} für den Spitznamen */
@@ -1485,6 +1565,7 @@ html.kb-open #view { padding-bottom: 60vh; }
     onAdopt: function (fn) { adoptHooks.push(fn); },
     onChange: function (fn) { changeHooks.push(fn); },
     cleanNotify: cleanNotify,
+    cleanView: cleanView,
     NOTIFY_DEFAULTS: NOTIFY_DEFAULTS
   };
 
@@ -4417,6 +4498,136 @@ html.kb-open #view { padding-bottom: 60vh; }
 
 </script>
 <script>
+/* Wischen zwischen den Reitern, zwei getrennte Optionen (Einstellungen > Darstellung, beide standardmäßig aus):
+   swipeNav:  Finger auf der unteren Reiterleiste nach links oder rechts ziehen, der Reiter unter dem Finger beim Loslassen wird geöffnet.
+   swipePage: im Inhaltsbereich nach links wischen = nächster Reiter, nach rechts = vorheriger.
+   Die Optionen werden bei jeder Geste frisch gelesen, ein Umschalten wirkt also sofort. */
+(function () {
+  "use strict";
+  var S = App.store;
+  var MIN_DX = 70, RATIO = 1.8, MAX_MS = 800, EDGE = 24, NAV_SLOP = 10;
+
+  function opt(k) { var v = S.state().settings.view; return !!(v && v[k]); }
+  function tabs() { return [].slice.call(document.querySelectorAll("#tabs .tab")); }
+  function current() { return tabs().findIndex(function (a) { return a.getAttribute("aria-current") === "page"; }); }
+
+  /* touch-action der Leiste nur bei aktiver Option sperren, sonst bleibt alles wie gewohnt */
+  function classes() { document.documentElement.classList.toggle("sw-nav", opt("swipeNav")); }
+  S.onChange(classes);
+  classes();
+
+  function go(i, dir) {
+    var t = tabs()[i];
+    if (!t) return;
+    var v = document.getElementById("view");
+    if (v && dir) {
+      v.classList.remove("sw-in-l", "sw-in-r");
+      void v.offsetWidth;
+      v.classList.add(dir > 0 ? "sw-in-l" : "sw-in-r");
+      setTimeout(function () { v.classList.remove("sw-in-l", "sw-in-r"); }, 320);
+    }
+    location.hash = "#" + t.getAttribute("data-id");
+  }
+
+  /* --- 1. Wischen über die Reiterleiste --- */
+  var box = document.getElementById("tabs");
+  var nav = null;
+  function idxAt(x) {
+    var list = tabs(), best = 0, bestD = Infinity;
+    for (var i = 0; i < list.length; i++) {
+      var r = list[i].getBoundingClientRect();
+      if (x >= r.left && x <= r.right) return i;
+      var d = Math.min(Math.abs(x - r.left), Math.abs(x - r.right));
+      if (d < bestD) { bestD = d; best = i; }
+    }
+    return best;
+  }
+  function paintHot(i) { tabs().forEach(function (a, k) { a.classList.toggle("swipe-hot", k === i); }); }
+  function clearNav() { paintHot(-1); nav = null; }
+
+  if (box) {
+    box.addEventListener("pointerdown", function (ev) {
+      if (!opt("swipeNav") || !ev.isPrimary || (ev.pointerType === "mouse" && ev.button !== 0)) return;
+      nav = { x0: ev.clientX, moved: false, hot: -1 };
+    });
+    box.addEventListener("pointermove", function (ev) {
+      if (!nav) return;
+      if (!nav.moved && Math.abs(ev.clientX - nav.x0) > NAV_SLOP) nav.moved = true;
+      if (!nav.moved) return;
+      var i = idxAt(ev.clientX);
+      if (i !== nav.hot) {
+        nav.hot = i;
+        paintHot(i);
+        try { if (navigator.vibrate) navigator.vibrate(8); } catch (e) {}
+      }
+    });
+    box.addEventListener("pointerup", function (ev) {
+      if (!nav) return;
+      var n = nav, cur = current();
+      clearNav();
+      if (!n.moved) return;
+      /* Nach dem Ziehen soll der Loslass-Klick nichts zusätzlich auslösen */
+      var stop = function (e) { e.preventDefault(); e.stopPropagation(); };
+      var off = function () { document.removeEventListener("click", stop, true); document.removeEventListener("pointerdown", off, true); };
+      document.addEventListener("click", stop, true);
+      document.addEventListener("pointerdown", off, true); /* ein neuer Fingerdruck beendet die Sperre sofort */
+      setTimeout(off, 200);
+      var i = idxAt(ev.clientX);
+      if (i !== cur) go(i, i > cur ? 1 : -1);
+    });
+    box.addEventListener("pointercancel", clearNav);
+  }
+
+  /* --- 2. Wischen im Inhaltsbereich --- */
+  var ts = null;
+  function scrollsX(el) {
+    for (; el && el !== document.body && el.nodeType === 1; el = el.parentElement) {
+      if (el.scrollWidth > el.clientWidth + 2) {
+        var ox = getComputedStyle(el).overflowX;
+        if (ox === "auto" || ox === "scroll") return true;
+      }
+    }
+    return false;
+  }
+  function allowed(t) {
+    if (!t || t.nodeType !== 1) return false;
+    if (t.closest("#tabs, .dlg-back, input, textarea, select, [contenteditable=''], [contenteditable='true'], [data-noswipe]")) return false;
+    if (document.documentElement.classList.contains("kb-open")) return false;
+    if (document.querySelector(".dlg-back")) return false;
+    return !scrollsX(t);
+  }
+  document.addEventListener("touchstart", function (ev) {
+    ts = null;
+    if (!opt("swipePage") || ev.touches.length !== 1) return;
+    var t = ev.touches[0];
+    if (t.clientX < EDGE || t.clientX > window.innerWidth - EDGE) return; /* Randbereich gehört der Zurück-Geste des Systems */
+    if (!allowed(ev.target)) return;
+    ts = { x: t.clientX, y: t.clientY, t: Date.now(), blocked: false };
+  }, { passive: true });
+  window.addEventListener("touchmove", function (ev) {
+    if (!ts) return;
+    if (ev.defaultPrevented || ev.touches.length > 1) ts.blocked = true; /* z. B. beim Verschieben einer Übung */
+  }, { passive: true });
+  document.addEventListener("touchcancel", function () { ts = null; }, { passive: true });
+  document.addEventListener("touchend", function (ev) {
+    var s = ts;
+    ts = null;
+    if (!s || s.blocked || !opt("swipePage")) return;
+    var t = ev.changedTouches[0];
+    if (!t) return;
+    var dx = t.clientX - s.x, dy = t.clientY - s.y;
+    if (Math.abs(dx) < MIN_DX || Math.abs(dx) < RATIO * Math.abs(dy) || Date.now() - s.t > MAX_MS) return;
+    if (document.querySelector(".holding, .lifted, .dragging")) return;
+    var cur = current(), next = cur + (dx < 0 ? 1 : -1);
+    if (cur < 0 || next < 0 || next >= tabs().length) return;
+    go(next, dx < 0 ? 1 : -1);
+  }, { passive: true });
+
+  App.swipe = { go: go };
+})();
+
+</script>
+<script>
 /* Reiter 1: Trainingsplan. Tag wählen, Übungen abhaken oder Zahl eintragen, Tages- und Wochenprozent mit Überleistung. */
 (function () {
   "use strict";
@@ -4428,6 +4639,84 @@ html.kb-open #view { padding-bottom: 60vh; }
   function band(p) { return C.band(p); }
   var NS = "http://www.w3.org/2000/svg", gid = 0, CIRC = 2 * Math.PI * 42;
   function svg(tag, attrs) { var n = document.createElementNS(NS, tag); for (var k in attrs) n.setAttribute(k, attrs[k]); return n; }
+
+  /* Kleiner Ring für das Detailfenster, gleiche Farbstufen wie der große Ring. p === null: gestrichelt (kein Training). */
+  function miniRing(p) {
+    var id = "mr" + (++gid), R = 17, K = 2 * Math.PI * R;
+    var sv = svg("svg", { viewBox: "0 0 44 44", class: "mini-ring", "aria-hidden": "true", focusable: "false" });
+    sv.append(svg("circle", { cx: "22", cy: "22", r: String(R), fill: "none", "stroke-width": "5", class: p === null ? "ring-t dashed" : "ring-t" }));
+    if (p !== null && p > 0) {
+      var c = band(p), defs = svg("defs", {}), g = svg("linearGradient", { id: id, x1: "0", y1: "0", x2: "1", y2: "1" });
+      g.append(svg("stop", { offset: "0", "stop-color": c[1] }), svg("stop", { offset: "1", "stop-color": c[2] }));
+      defs.append(g);
+      sv.append(defs, svg("circle", { cx: "22", cy: "22", r: String(R), fill: "none", "stroke-width": "5", "stroke-linecap": "round", stroke: "url(#" + id + ")",
+        transform: "rotate(-90 22 22)", "stroke-dasharray": K.toFixed(2), "stroke-dashoffset": (K * (1 - Math.min(100, p) / 100)).toFixed(2) }));
+    }
+    return sv;
+  }
+
+  /* Glückwunsch-Moment: kurzer Puls und Funken am Ring. Bei 100 % grün, über 100 % violett mit mehr Glanz. */
+  var FX_COLORS = { full: ["#5fd68a", "#1f9d55", "#c5e86c", "#ffe066"], over: ["#c39bff", "#7c3aed", "#ffe066", "#ffffff", "#e9d5ff"] };
+  function celebrate(box, kind) {
+    var wrap = box.querySelector(".ring-wrap");
+    if (!wrap) return;
+    var calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var old = wrap.querySelector(".fx");
+    if (old) old.remove();
+    box.classList.remove("fx-full", "fx-over");
+    void box.offsetWidth;
+    box.classList.add("fx-" + kind);
+    var layer = el("span", { class: "fx", "aria-hidden": "true" });
+    if (!calm) {
+      var n = kind === "over" ? 24 : 14, cols = FX_COLORS[kind];
+      for (var i = 0; i < n; i++) {
+        var ang = (i / n) * 2 * Math.PI + Math.random() * 0.4, dist = 52 + Math.random() * 30;
+        var sp = el("i", { class: "fx-p" + (kind === "over" && i % 3 === 0 ? " star" : "") });
+        sp.style.setProperty("--dx", Math.round(Math.cos(ang) * dist) + "px");
+        sp.style.setProperty("--dy", Math.round(Math.sin(ang) * dist) + "px");
+        sp.style.setProperty("--rot", Math.round(Math.random() * 360) + "deg");
+        sp.style.setProperty("--sz", (5 + Math.round(Math.random() * 4)) + "px");
+        sp.style.setProperty("--dl", Math.round(Math.random() * 120) + "ms");
+        sp.style.background = cols[i % cols.length];
+        layer.append(sp);
+      }
+    }
+    wrap.append(layer);
+    try { if (navigator.vibrate) navigator.vibrate(kind === "over" ? [25, 40, 25] : 25); } catch (e) {}
+    setTimeout(function () { layer.remove(); box.classList.remove("fx-full", "fx-over"); }, 1700);
+  }
+  /* Angeheftete Kacheln: ab etwas Scrollen werden sie klein. Die Höhe der Seite bleibt gleich (Ausgleich per margin-bottom), damit nichts springt. */
+  function bindSticky(box) {
+    var comp = false;
+    function upd() {
+      if (!box.isConnected) { window.removeEventListener("scroll", upd); return; }
+      var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+      var want = comp ? y > 20 : y > 60;
+      if (want === comp) return;
+      comp = want;
+      if (want) {
+        var h0 = box.offsetHeight;
+        box.classList.add("compact");
+        box.style.marginBottom = Math.max(0, h0 - box.offsetHeight) + "px";
+      } else {
+        box.classList.remove("compact");
+        box.style.marginBottom = "";
+      }
+    }
+    window.addEventListener("scroll", upd, { passive: true });
+    upd();
+  }
+  var fx = null; /* wird beim Aufbau der Seite gesetzt: { day(kind), week(kind) } */
+  function cross(b, a) {
+    if (b === null || a === null) return null;
+    if (a > 100 && b <= 100) return "over";
+    if (a >= 100 && b < 100) return "full";
+    return null;
+  }
+  function snap(day) {
+    var st = S.state(), it = C.dayItems(st, day);
+    return { d: it ? C.pct(C.aggregate([it]).perfAll) : null, w: C.pct(C.aggregate(C.allDays(st)).perfAll) };
+  }
 
   /* Ring-Kachel: Beschriftung, Aktivitätsring mit Verlauf, Prozent in der Mitte. Tippen öffnet die Details. */
   function Meter(label) {
@@ -4451,9 +4740,17 @@ html.kb-open #view { padding-bottom: 60vh; }
         head.append(el("span", { class: "dt-big" }, String(o.p), el("small", { text: "%" })));
         if (o.p > 100) head.append(el("span", { class: "over-chip", text: "+" + (o.p - 100) + " % über Ziel" }));
       }
+      var mini = null;
+      if (o.mini && o.mini.length) {
+        mini = el("div", { class: "dt-mini" });
+        o.mini.forEach(function (m) {
+          var ring = el("span", { class: "mini-wrap" }, miniRing(m.p), el("span", { class: "mini-val", text: m.p === null ? "–" : String(m.p) }));
+          mini.append(el("div", { class: "mini" + (m.p !== null && m.p > 100 ? " over" : "") }, ring, el("span", { class: "mini-name", text: m.name }), el("span", { class: "mini-sub", text: m.sub })));
+        });
+      }
       var stats = el("dl", { class: "stats dt-stats" });
       o.rows.forEach(function (r) { stats.append(el("div", null, el("dt", { text: r[0] }), el("dd", { text: r[1] }))); });
-      App.dialog.info({ title: o.title, body: el("div", { class: "dt-body" }, head, stats) });
+      App.dialog.info({ title: o.title, body: el("div", { class: "dt-body" }, head, mini, stats) });
     }
 
     return {
@@ -4482,10 +4779,15 @@ html.kb-open #view { padding-bottom: 60vh; }
   }
 
   function setDone(day, id, n) {
-    var st = S.state();
+    var st = S.state(), before = snap(day);
     if (!st.done[day]) st.done[day] = {};
     st.done[day][id] = n;
     S.touch();
+    if (fx) {
+      var after = snap(day), kd = cross(before.d, after.d), kw = cross(before.w, after.w);
+      if (kd) fx.day(kd);
+      if (kw) fx.week(kw);
+    }
   }
 
   App.register({
@@ -4507,7 +4809,14 @@ html.kb-open #view { padding-bottom: 60vh; }
       var live = el("p", { class: "sr", id: "day-live", "aria-live": "polite" });
       var help = el("p", { class: "sr", id: "day-help", text: "Trainingstag verschieben: Alt plus Pfeil links oder rechts verschiebt das Training auf den nächsten freien Tag. Mit Maus oder Finger 3 Sekunden halten und auf einen freien Tag ziehen." });
       function say(t) { live.textContent = ""; setTimeout(function () { live.textContent = t; }, 30); }
-      root.append(el("div", { class: "meters" }, mDay.box, mWeek.box), strip, live, help, panel);
+      var view = S.state().settings.view || {};
+      var meters = el("div", { class: "meters" + (view.sticky ? " stick" : "") }, mDay.box, mWeek.box);
+      root.append(meters, strip, live, help, panel);
+      if (view.sticky) bindSticky(meters);
+      fx = {
+        day: function (k) { celebrate(mDay.box, k); say(k === "over" ? "Tagesziel übertroffen!" : "Tagesziel erreicht!"); },
+        week: function (k) { celebrate(mWeek.box, k); say(k === "over" ? "Wochenziel übertroffen!" : "Wochenziel erreicht!"); }
+      };
 
       App.DAYS.forEach(function (d, i) {
         var dn = el("span", { class: "dn", text: d.s });
@@ -4566,6 +4875,7 @@ html.kb-open #view { padding-bottom: 60vh; }
           var a = C.aggregate([items]);
           mDay.set({
             label: label, title: title, p: C.pct(a.perfAll),
+            mini: items.map(function (it) { return { name: it[0], p: C.pct(it[3] / it[2]), sub: it[3] + " / " + it[2] + " " + it[1] }; }),
             rows: a.slots
               ? [["Übungen erreicht", a.reached + " von " + a.slots], ["Leistung der gemachten Übungen", perf(a.perfStarted)]].concat(kcalRow([items]))
               : [["Noch keine Übungen angelegt", "–"]]
@@ -4575,6 +4885,12 @@ html.kb-open #view { padding-bottom: 60vh; }
         mWeek.set({
           title: "Wochenziel",
           p: C.pct(w.perfAll),
+          mini: App.DAYS.map(function (d, i) {
+            var it = C.dayItems(st, i);
+            if (!it) return { name: d.s, p: null, sub: st.days[i] ? "Pause" : "Ruhe" };
+            var ag = C.aggregate([it]);
+            return { name: d.s, p: C.pct(ag.perfAll), sub: ag.reached + " von " + ag.slots };
+          }),
           rows: [
             ["Übungen erreicht", w.reached + " von " + w.slots],
             ["Trainingstage komplett", w.fullDays + " von " + w.trainDays],
@@ -4613,10 +4929,42 @@ html.kb-open #view { padding-bottom: 60vh; }
         C.tint(r.fill, v > 0 ? rp : null);
       }
 
+      /* Option "Erledigte Übungen nach unten": sortiert die Zeilen um. Während man in ein Zahlenfeld tippt, wird gewartet. */
+      var orderTimer = null;
+      function applyOrder(force) {
+        if (!view.hideDone) return;
+        var ul = panel.querySelector(".xrows");
+        if (!ul || !rows.length) return;
+        var act = document.activeElement;
+        if (!force && act && act.type === "number" && ul.contains(act)) return;
+        var st = S.state(), open = [], done = [];
+        rows.forEach(function (r) { (C.doneOf(st, r.day, r.e.id) >= r.e.target ? done : open).push(r.li); });
+        var want = open.concat(done);
+        var cur = Array.prototype.slice.call(ul.querySelectorAll("li.xrow"));
+        var hasSep = !!ul.querySelector(".xsep");
+        if (want.every(function (li, i) { return cur[i] === li; }) && hasSep === done.length > 0) { var s0 = ul.querySelector(".xsep"); if (!s0) return; s0.textContent = "Erledigt · " + done.length; return; }
+        var oldPos = new Map(cur.map(function (li, i) { return [li, i]; }));
+        var sep = ul.querySelector(".xsep");
+        if (sep) sep.remove();
+        open.forEach(function (li) { ul.appendChild(li); });
+        if (done.length) { sep = el("li", { class: "xsep", text: "Erledigt · " + done.length }); ul.appendChild(sep); }
+        done.forEach(function (li) { ul.appendChild(li); });
+        want.forEach(function (li, i) {
+          if (!force && oldPos.get(li) !== i) { li.classList.remove("settle"); void li.offsetWidth; li.classList.add("settle"); }
+        });
+        if (act && act !== document.body && act.isConnected) { try { act.focus({ preventScroll: true }); } catch (e) {} }
+      }
+      function scheduleOrder() {
+        if (!view.hideDone) return;
+        clearTimeout(orderTimer);
+        orderTimer = setTimeout(function () { applyOrder(false); }, 700);
+      }
+
       function paintAll() {
         paintMeters();
         paintStrip();
         rows.forEach(paintRow);
+        scheduleOrder();
       }
 
       /* Timer: Zeile zeigt Knopf und, wenn offen, das Timer-Feld. Es gibt nur einen Timer gleichzeitig. */
@@ -4782,6 +5130,8 @@ html.kb-open #view { padding-bottom: 60vh; }
         var ul = el("ul", { class: "xrows" });
         st.exercises.forEach(function (e) { ul.append(buildRow(e)); });
         panel.append(ul, shiftBox(), noteBox(), pauseBox(date));
+        ul.addEventListener("focusout", function () { setTimeout(function () { applyOrder(false); }, 150); });
+        applyOrder(true);
         rows.forEach(paintTimer);
         T.onChange(function () { rows.forEach(paintToggle); });
       }
@@ -5366,7 +5716,7 @@ html.kb-open #view { padding-bottom: 60vh; }
     return card;
   }
 
-  /* Auf einen Blick: Wochenziel, Serie, Kalorien und Gewicht, ohne etwas aufzuklappen */
+  /* Auf einen Blick: Wochenziel, Serie, Kalorien und Gewicht, zugeklappt, bis man es öffnet */
   function summary() {
     var st = App.store.state(), H = App.health;
     var days = C.allDays(st), a = C.aggregate(days);
@@ -5384,13 +5734,13 @@ html.kb-open #view { padding-bottom: 60vh; }
       return el("section", { class: "rec", id: id }, el("p", { class: "rec-h", text: h }), el("p", { class: "rec-big", text: big }), el("p", { class: "rec-sub", text: sub }));
     }
     var left = a.slots - a.reached;
-    return el("section", { class: "card", id: "rep-sum" },
-      el("h2", { text: "Auf einen Blick" }),
+    return App.fold("sum", "Auf einen Blick", "rep-sum", [
       el("div", { class: "hv-two" },
         tile("sum-week", "Diese Woche", p + " %", a.slots ? a.reached + " von " + a.slots + " Zielen erreicht" : "keine Trainingstage"),
         tile("sum-streak", "Serie", String(serie), serie === 1 ? "Woche in Folge" : "Wochen in Folge"),
         tile("sum-kcal", "Kalorien", kcal === null ? "–" : H.fmtKcal(kcal).replace("≈ ", ""), kcal === null ? "Gewicht fehlt" : "geschätzt, diese Woche"),
-        tile("sum-weight", "Gewicht", wText > 0 ? H.fmt1(wText) + " kg" : "–", wSub)));
+        tile("sum-weight", "Gewicht", wText > 0 ? H.fmt1(wText) + " kg" : "–", wSub))
+    ]);
   }
 
   App.register({
@@ -5554,6 +5904,13 @@ html.kb-open #view { padding-bottom: 60vh; }
     custom.addEventListener("input", function () { T.setAccent(custom.value); paintPressed(); });
     custom.addEventListener("change", function () { T.setAccent(custom.value); paintAccent(); });
 
+    function toggle(key, text) {
+      var inp = el("input", { type: "checkbox", class: "tgl-in", role: "switch", id: "view-" + key });
+      inp.checked = !!S.state().settings.view[key];
+      inp.addEventListener("change", function () { S.state().settings.view[key] = inp.checked; S.touch(); });
+      return el("label", { class: "tgl", for: "view-" + key }, el("span", { text: text }), inp);
+    }
+
     var fill = el("i");
     fill.style.width = "62%";
     paintMode();
@@ -5569,7 +5926,13 @@ html.kb-open #view { padding-bottom: 60vh; }
         el("span", { class: "pill", text: "Vorschau" }),
         el("div", { class: "bar" }, fill),
         el("span", { class: "btn primary", text: "Knopf" })
-      )
+      ),
+      el("h3", { text: "Trainingsplan" }),
+      toggle("sticky", "Kacheln oben anheften"),
+      toggle("hideDone", "Erledigte Übungen nach unten"),
+      el("h3", { text: "Steuerung" }),
+      toggle("swipeNav", "Navigation swipen"),
+      toggle("swipePage", "Seiten swipen")
     ]);
   }
 
